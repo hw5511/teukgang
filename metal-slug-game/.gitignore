@@ -1,0 +1,5 @@
+verification*.png
+assets/source/
+
+.vercel
+.netlify

@@ -1,0 +1,41 @@
+{
+  "name": "remotion-typecast-video",
+  "version": "1.0.0",
+  "description": "My Remotion video",
+  "repository": {},
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@neosapience/typecast-js": "^0.4.0",
+    "@remotion/cli": "4.0.466",
+    "@remotion/tailwind-v4": "4.0.466",
+    "dotenv": "^17.4.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.466",
+    "tailwindcss": "4.0.0"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.466",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "render": "remotion render",
+    "tts": "node scripts/typecast-tts.mjs",
+    "tts:scenes": "node scripts/make-scene-audio.mjs",
+    "timeline": "node scripts/build-timeline.mjs",
+    "sfx": "node scripts/make-sfx.mjs",
+    "editor": "node scripts/storyboard-editor.mjs",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

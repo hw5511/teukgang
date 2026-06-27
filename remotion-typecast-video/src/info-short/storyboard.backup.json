@@ -1,0 +1,168 @@
+{
+  "title": "생일 역설",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSeconds": 60
+  },
+  "captionRule": "문장 경계는 넘지 않고, 문장 안에서 의미 단위로만 2~4어절씩 자른다.",
+  "scenes": [
+    {
+      "scene": 1,
+      "time": "0-5초",
+      "durationFrames": 150,
+      "visualKey": "arrival",
+      "accent": "#f97316",
+      "sceneDescription": "검은색 대신 밝은 격자 배경 위에 원형 아바타가 하나씩 등장한다. 23명의 사람이 원형으로 모이고, 마지막에 중앙에 숫자 23이 크게 나타난다.",
+      "scriptLines": [
+        "사람 23명만 모이면, 이상한 일이 벌어집니다."
+      ],
+      "captionChunks": [
+        "사람 23명만 모이면,",
+        "이상한 일이 벌어집니다."
+      ]
+    },
+    {
+      "scene": 2,
+      "time": "5-10초",
+      "durationFrames": 150,
+      "visualKey": "match",
+      "accent": "#dc2626",
+      "sceneDescription": "23명 중 두 명만 색으로 강조된다. 두 사람 위에 같은 날짜 7.12가 뜨고, 두 사람 사이에 선이 연결된다. 이후 50%+ 숫자가 중앙에 나타난다.",
+      "scriptLines": [
+        "그중 두 명의 생일이 같을 확률이 50%를 넘습니다."
+      ],
+      "captionChunks": [
+        "그중 두 명의 생일이",
+        "같을 확률이 50%를 넘습니다."
+      ]
+    },
+    {
+      "scene": 3,
+      "time": "10-15초",
+      "durationFrames": 150,
+      "visualKey": "calendar",
+      "accent": "#0f766e",
+      "sceneDescription": "365개의 날짜 칸이 달력처럼 펼쳐진다. 중앙에 365라는 숫자가 크게 나타나며 직관적으로는 넉넉해 보이는 상황을 만든다.",
+      "scriptLines": [
+        "말이 안 되는 것 같죠.",
+        "1년은 365일이나 있으니까요."
+      ],
+      "captionChunks": [
+        "말이 안 되는 것 같죠.",
+        "1년은 365일이나 있으니까요."
+      ]
+    },
+    {
+      "scene": 4,
+      "time": "15-21초",
+      "durationFrames": 180,
+      "visualKey": "singleCompare",
+      "accent": "#2563eb",
+      "sceneDescription": "한 명의 아바타가 중앙에서 강조된다. 중앙 인물과 주변 22명 사이에 선이 하나씩 연결되며 한 명만 비교해도 비교 대상이 많다는 것을 보여준다.",
+      "scriptLines": [
+        "그런데 우리는 한 사람의 생일만 보는 게 아닙니다."
+      ],
+      "captionChunks": [
+        "그런데 우리는 한 사람의",
+        "생일만 보는 게 아닙니다."
+      ]
+    },
+    {
+      "scene": 5,
+      "time": "21-28초",
+      "durationFrames": 210,
+      "visualKey": "allPairs",
+      "accent": "#7c3aed",
+      "sceneDescription": "카메라가 전체 23명 구조로 돌아온다. 모든 사람 사이에 선이 빠르게 생기며 복잡한 연결망이 차오른다.",
+      "scriptLines": [
+        "사람과 사람 사이의 모든 조합을 비교하게 됩니다."
+      ],
+      "captionChunks": [
+        "사람과 사람 사이의 모든 조합을",
+        "비교하게 됩니다."
+      ]
+    },
+    {
+      "scene": 6,
+      "time": "28-34초",
+      "durationFrames": 180,
+      "visualKey": "pairCount",
+      "accent": "#eab308",
+      "sceneDescription": "연결선이 배경처럼 희미하게 남고, 중앙에 253이라는 숫자가 크게 떠오른다. 숫자 주변에 은은한 빛을 줘서 반전 포인트처럼 보이게 한다.",
+      "scriptLines": [
+        "23명이 있으면 가능한 짝은 무려 253쌍입니다."
+      ],
+      "captionChunks": [
+        "23명이 있으면",
+        "가능한 짝은 무려 253쌍입니다."
+      ]
+    },
+    {
+      "scene": 7,
+      "time": "34-41초",
+      "durationFrames": 210,
+      "visualKey": "randomDots",
+      "accent": "#16a34a",
+      "sceneDescription": "달력 칸 위로 점들이 하나씩 떨어진다. 처음에는 흩어지지만, 두 점이 같은 날짜 칸에 겹치며 해당 칸만 색으로 강조된다.",
+      "scriptLines": [
+        "비교가 많아질수록, 우연히 겹칠 기회도 급격히 늘어납니다."
+      ],
+      "captionChunks": [
+        "비교가 많아질수록,",
+        "우연히 겹칠 기회도 급격히 늘어납니다."
+      ]
+    },
+    {
+      "scene": 8,
+      "time": "41-47초",
+      "durationFrames": 180,
+      "visualKey": "reverse",
+      "accent": "#0891b2",
+      "sceneDescription": "같은 생일이 생긴 달력 장면 위에 X 표시가 그어진다. 이후 곡선 경로와 P(no match)가 등장하며 '반대로 계산한다'는 전환을 보여준다.",
+      "scriptLines": [
+        "그래서 수학자들은 반대로 계산합니다.",
+        "모두 다를 확률을 먼저 보는 거죠."
+      ],
+      "captionChunks": [
+        "그래서 수학자들은",
+        "반대로 계산합니다.",
+        "모두 다를 확률을 먼저 보는 거죠."
+      ]
+    },
+    {
+      "scene": 9,
+      "time": "47-54초",
+      "durationFrames": 210,
+      "visualKey": "formula",
+      "accent": "#9333ea",
+      "sceneDescription": "365/365, 364/365, 363/365 같은 항이 순서대로 등장한다. 각 항 아래에 사람 아이콘이 추가되며 다음 사람은 앞사람과 겹치면 안 된다는 구조를 보여준다.",
+      "scriptLines": [
+        "첫 사람은 아무 날이나 가능합니다.",
+        "하지만 다음 사람은 겹치면 안 됩니다."
+      ],
+      "captionChunks": [
+        "첫 사람은 아무 날이나 가능합니다.",
+        "하지만 다음 사람은 겹치면 안 됩니다."
+      ]
+    },
+    {
+      "scene": 10,
+      "time": "54-60초",
+      "durationFrames": 180,
+      "visualKey": "result",
+      "accent": "#db2777",
+      "sceneDescription": "확률 게이지가 0%에서 올라가 50% 선을 넘는다. 아래에는 같은 날짜를 가진 두 사람이 다시 등장하고, 마지막에는 우연이 빠르게 찾아온다는 메시지로 닫는다.",
+      "scriptLines": [
+        "그렇게 23명까지 가면, 겹칠 확률은 50%를 넘어섭니다.",
+        "우연은 생각보다 빨리 온다."
+      ],
+      "captionChunks": [
+        "그렇게 23명까지 가면,",
+        "겹칠 확률은 50%를 넘어섭니다.",
+        "우연은 생각보다 빨리 온다."
+      ]
+    }
+  ]
+}

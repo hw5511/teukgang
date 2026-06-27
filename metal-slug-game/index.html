@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iron Rescue</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23141817'/%3E%3Crect x='6' y='11' width='20' height='10' fill='%23e8aa39'/%3E%3Crect x='10' y='8' width='12' height='5' fill='%232f8a58'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="game-panel" aria-label="Iron Rescue game">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="mobile-controls" aria-label="Touch controls">
+        <button type="button" data-key="ArrowLeft">◀</button>
+        <button type="button" data-key="ArrowRight">▶</button>
+        <button type="button" data-key="KeyX">●</button>
+        <button type="button" data-key="KeyZ">▲</button>
+        <button type="button" data-key="KeyC">✦</button>
+      </div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

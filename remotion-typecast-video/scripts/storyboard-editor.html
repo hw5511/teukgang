@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Storyboard Caption Editor</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f6ef;
+        --ink: #111827;
+        --muted: #64748b;
+        --line: #d7dce2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Pretendard, "Spoqa Han Sans Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      }
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+      }
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 24px 18px;
+        border-right: 1px solid var(--line);
+        background: rgba(247, 246, 239, 0.9);
+        overflow: auto;
+      }
+      main {
+        padding: 28px 34px 48px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        line-height: 1.2;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .actions {
+        display: grid;
+        gap: 8px;
+        margin: 20px 0 18px;
+      }
+      button {
+        min-height: 40px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: white;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .sceneNav {
+        display: grid;
+        gap: 6px;
+      }
+      .sceneNav a {
+        display: block;
+        padding: 9px 10px;
+        color: var(--ink);
+        text-decoration: none;
+        border: 1px solid transparent;
+        font-size: 13px;
+      }
+      .sceneNav a:hover {
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .status {
+        margin-top: 18px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.42);
+        white-space: pre-wrap;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.45;
+        max-height: 260px;
+        overflow: auto;
+      }
+      .resultPanel {
+        margin: 0 0 24px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.58);
+      }
+      .resultPanel[hidden] {
+        display: none;
+      }
+      .resultHead {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .resultTitle {
+        font-size: 15px;
+        font-weight: 950;
+      }
+      .resultLink {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 850;
+      }
+      .resultVideo {
+        width: min(360px, 100%);
+        aspect-ratio: 9 / 16;
+        display: block;
+        background: #111827;
+      }
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+      .outputName {
+        display: grid;
+        gap: 6px;
+        min-width: 280px;
+      }
+      label {
+        font-size: 12px;
+        font-weight: 900;
+        color: #475569;
+      }
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--ink);
+        font: inherit;
+      }
+      input {
+        height: 38px;
+        padding: 0 10px;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 92px;
+        padding: 10px;
+        line-height: 1.55;
+      }
+      .scene {
+        border-top: 1px solid var(--line);
+        padding: 26px 0 30px;
+        display: grid;
+        gap: 14px;
+      }
+      .sceneHead {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+      }
+      .sceneNo {
+        font-size: 28px;
+        font-weight: 950;
+      }
+      .sceneTime {
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .sceneGrid {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
+        gap: 18px;
+      }
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+      .description {
+        min-height: 138px;
+      }
+      .chunks {
+        min-height: 152px;
+        font-size: 19px;
+        font-weight: 800;
+      }
+      .preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        min-height: 34px;
+      }
+      .chip {
+        padding: 7px 9px;
+        background: #fff;
+        border: 1px solid var(--line);
+        font-size: 13px;
+        font-weight: 850;
+      }
+      .warning {
+        color: #b45309;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      @media (max-width: 980px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: static;
+          height: auto;
+        }
+        .sceneGrid,
+        .topline {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <h1 id="title">Storyboard</h1>
+        <div class="meta" id="meta"></div>
+        <div class="actions">
+          <button id="saveBtn" class="primary">JSON 저장</button>
+          <button id="renderBtn">저장 후 렌더</button>
+          <button id="reloadBtn">다시 불러오기</button>
+        </div>
+        <nav class="sceneNav" id="sceneNav"></nav>
+        <div class="status" id="status">loading...</div>
+      </aside>
+      <main>
+        <div class="topline">
+          <div>
+            <h1>자막 청크 편집</h1>
+            <div class="meta">
+              각 줄이 영상에서 한 번에 뜨는 자막 청크입니다. 저장 후 렌더를 누르면 JSON이 먼저 저장되고 그 데이터로 렌더됩니다.
+            </div>
+          </div>
+          <div class="outputName">
+            <label for="outputName">렌더 파일명</label>
+            <input id="outputName" value="birthday-paradox-ui-short.mp4" />
+          </div>
+        </div>
+        <section id="resultPanel" class="resultPanel" hidden>
+          <div class="resultHead">
+            <div class="resultTitle">렌더 결과</div>
+            <a id="resultLink" class="resultLink" href="#" target="_blank" rel="noreferrer">파일 열기</a>
+          </div>
+          <video id="resultVideo" class="resultVideo" controls playsinline></video>
+        </section>
+        <section id="scenes"></section>
+      </main>
+    </div>
+    <script>
+      let storyboard = null;
+      let pollTimer = null;
+
+      const $ = (selector) => document.querySelector(selector);
+      const status = (message) => {
+        $("#status").textContent = message;
+      };
+
+      const lines = (value) =>
+        value
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+      const escapeHtml = (value) =>
+        String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+
+      const setBusy = (busy) => {
+        $("#saveBtn").disabled = busy;
+        $("#renderBtn").disabled = busy;
+        $("#reloadBtn").disabled = busy;
+      };
+
+      const publicOutputUrl = (output) => "/" + output.replaceAll("\\", "/");
+
+      const hideResult = () => {
+        $("#resultPanel").hidden = true;
+        $("#resultVideo").removeAttribute("src");
+        $("#resultLink").removeAttribute("href");
+      };
+
+      const showResult = (output) => {
+        const url = publicOutputUrl(output);
+        const cacheBustedUrl = `${url}?t=${Date.now()}`;
+        $("#resultPanel").hidden = false;
+        $("#resultVideo").src = cacheBustedUrl;
+        $("#resultLink").href = cacheBustedUrl;
+        $("#resultLink").textContent = url;
+      };
+
+      const renderScene = (scene) => {
+        const script = scene.scriptLines.join("\n");
+        const chunks = scene.captionChunks.join("\n");
+        const longChunks = scene.captionChunks.filter((chunk) => chunk.length > 26);
+
+        return `<article class="scene" id="scene-${scene.scene}" data-scene="${scene.scene}">
+          <div class="sceneHead">
+            <div class="sceneNo">${scene.scene}</div>
+            <div class="sceneTime">${scene.time} · ${scene.visualKey}</div>
+          </div>
+          <div class="sceneGrid">
+            <div class="field">
+              <label>장면 설명</label>
+              <textarea class="description" data-field="sceneDescription">${escapeHtml(scene.sceneDescription)}</textarea>
+            </div>
+            <div class="field">
+              <label>실질 대본 텍스트</label>
+              <textarea data-field="scriptLines">${escapeHtml(script)}</textarea>
+            </div>
+            <div class="field">
+              <label>자막 청크</label>
+              <textarea class="chunks" data-field="captionChunks">${escapeHtml(chunks)}</textarea>
+              <div class="warning">${longChunks.length ? "긴 청크: " + longChunks.join(" / ") : ""}</div>
+            </div>
+            <div class="field">
+              <label>자막 미리보기</label>
+              <div class="preview">${scene.captionChunks
+                .map((chunk) => `<span class="chip">${escapeHtml(chunk)}</span>`)
+                .join("")}</div>
+            </div>
+          </div>
+        </article>`;
+      };
+
+      const paint = () => {
+        $("#title").textContent = storyboard.title;
+        $("#meta").textContent = `${storyboard.format.width}x${storyboard.format.height} · ${storyboard.format.fps}fps · ${storyboard.format.durationSeconds}s`;
+        $("#sceneNav").innerHTML = storyboard.scenes
+          .map((scene) => `<a href="#scene-${scene.scene}">${scene.scene}. ${scene.time}</a>`)
+          .join("");
+        $("#scenes").innerHTML = storyboard.scenes.map(renderScene).join("");
+        $("#scenes").oninput = syncFromDom;
+      };
+
+      const syncFromDom = () => {
+        document.querySelectorAll(".scene").forEach((sceneEl) => {
+          const sceneNo = Number(sceneEl.dataset.scene);
+          const scene = storyboard.scenes.find((item) => item.scene === sceneNo);
+
+          sceneEl.querySelectorAll("textarea").forEach((textarea) => {
+            const field = textarea.dataset.field;
+            if (field === "scriptLines" || field === "captionChunks") {
+              scene[field] = lines(textarea.value);
+            } else {
+              scene[field] = textarea.value.trim();
+            }
+          });
+
+          sceneEl.querySelector(".preview").innerHTML = scene.captionChunks
+            .map((chunk) => `<span class="chip">${escapeHtml(chunk)}</span>`)
+            .join("");
+
+          const longChunks = scene.captionChunks.filter((chunk) => chunk.length > 26);
+          sceneEl.querySelector(".warning").textContent = longChunks.length
+            ? "긴 청크: " + longChunks.join(" / ")
+            : "";
+        });
+      };
+
+      const loadStoryboard = async () => {
+        const response = await fetch("/api/storyboard");
+        storyboard = await response.json();
+        paint();
+        status("JSON loaded");
+      };
+
+      const saveStoryboard = async () => {
+        syncFromDom();
+        const response = await fetch("/api/storyboard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(storyboard),
+        });
+
+        if (!response.ok) {
+          throw new Error((await response.json()).error || "save failed");
+        }
+
+        status("Saved storyboard.json");
+      };
+
+      const pollRender = async () => {
+        const response = await fetch("/api/render-status");
+        const state = await response.json();
+        if (state.running) {
+          hideResult();
+        }
+        const outputLink =
+          state.output && !state.running && state.exitCode === 0
+            ? `\n\n완료: /${state.output.replaceAll("\\", "/")}`
+            : "";
+        status(`${state.running ? "rendering..." : "render idle"}\nexit: ${state.exitCode ?? "-"}\noutput: ${state.output ?? "-"}\n\n${state.log || ""}${outputLink}`);
+
+        if (!state.running) {
+          clearInterval(pollTimer);
+          setBusy(false);
+          if (state.output && state.exitCode === 0) {
+            showResult(state.output);
+          }
+        }
+      };
+
+      const hydrateRenderState = async () => {
+        const response = await fetch("/api/render-status");
+        const state = await response.json();
+
+        if (state.running) {
+          setBusy(true);
+          status(`rendering...\noutput: ${state.output ?? "-"}`);
+          pollTimer = setInterval(pollRender, 1200);
+          return;
+        }
+
+        if (state.output && state.exitCode === 0) {
+          showResult(state.output);
+          status(`render complete\noutput: ${state.output}`);
+        }
+      };
+
+      $("#saveBtn").addEventListener("click", async () => {
+        try {
+          setBusy(true);
+          await saveStoryboard();
+        } catch (error) {
+          status(error.message);
+        } finally {
+          setBusy(false);
+        }
+      });
+
+      $("#renderBtn").addEventListener("click", async () => {
+        try {
+          setBusy(true);
+          await saveStoryboard();
+          const response = await fetch("/api/render", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ outputName: $("#outputName").value }),
+          });
+          const state = await response.json();
+          if (!response.ok) {
+            throw new Error(state.error || "render failed");
+          }
+          hideResult();
+          status(`render started\noutput: ${state.output}`);
+          pollTimer = setInterval(pollRender, 1200);
+        } catch (error) {
+          status(error.message);
+          setBusy(false);
+        }
+      });
+
+      $("#reloadBtn").addEventListener("click", loadStoryboard);
+
+      loadStoryboard()
+        .then(hydrateRenderState)
+        .catch((error) => status(error.message));
+    </script>
+  </body>
+</html>
