@@ -1,0 +1,21 @@
+P04 이미지 에셋 대기열을 다시 점검하고 고쳐줘.
+
+현재 문제:
+- assets/image-dancing-plague/image-prompts.json 과 image-prompts.md 안의 한국어 narration 일부가 깨져 있다.
+- PowerShell Get-Content로 한글 JSON을 읽으면 깨질 수 있으니, 이번에는 반드시 Node.js fs.readFileSync(..., "utf8") + JSON.parse로 storyboards/image-dancing-plague.storyboard.json을 읽어줘.
+
+해야 할 일:
+1. assets/image-dancing-plague/image-prompts.json 을 다시 생성해줘.
+2. assets/image-dancing-plague/image-prompts.md 도 다시 생성해줘.
+3. 한국어 narration, sceneId, outputFile, prompt가 깨지지 않아야 해.
+4. storyboards/image-dancing-plague.storyboard.json의 image.source 설정은 유지하되, 혹시 누락된 scene이 있으면 보완해줘.
+5. 실제 이미지 생성, Typecast TTS 호출, 영상 렌더링은 하지 마.
+
+검증:
+- Node.js로 storyboard JSON과 image-prompts.json을 파싱해줘.
+- scene 수와 images 수가 같은지 확인해줘.
+- image-prompts.json과 image-prompts.md 안에 깨진 문자열 패턴이 없는지 확인해줘.
+  - 다음 패턴이 있으면 실패로 봐: "???", "�", "怨", "媛", "遺", "瑜", "쇱"
+- npm run typecheck
+
+마지막 응답에는 고친 파일과 검증 결과만 짧게 정리해줘.

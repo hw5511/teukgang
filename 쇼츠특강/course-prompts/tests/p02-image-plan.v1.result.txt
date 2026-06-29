@@ -1,0 +1,35 @@
+**선정 소재**
+1518년 스트라스부르의 `춤 광란`(Dancing Plague of 1518)
+
+| 장면번호 | 장면묘사 | 실제 대본문장 | 예상 시간초 | 이미지 생성 프롬프트 |
+|---|---|---:|---:|---|
+| 1 | 16세기 스트라스부르의 좁은 돌길. 여름 햇볕 아래, 한 여성이 갑자기 멈춰 서서 이상하게 춤을 추기 시작하고, 주변 상인과 아이들이 놀라서 발걸음을 멈춘다. | 1518년, 스트라스부르의 한 여성이 거리 한복판에서 갑자기 춤을 추기 시작했습니다. | 9 | cinematic historical documentary illustration, 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, a woman suddenly dancing in a narrow cobblestone street, shocked merchants and children watching |
+| 2 | 며칠 뒤의 광장. 수십 명의 시민이 지친 얼굴로 무의식적으로 몸을 흔들고 발을 구르며, 몇몇은 발을 붙잡고 주저앉아 있다. | 며칠 만에 수십 명이 따라 했고, 기록에는 최대 사백 명까지 휩쓸렸다고 남아 있습니다. | 10 | cinematic historical documentary illustration, 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, crowded town square, exhausted townspeople involuntarily dancing, some collapsing and clutching their feet |
+| 3 | 시청 앞 임시 무대와 악단. 관리와 의사들이 사람들을 진정시키려 하지만, 오히려 더 많은 군중이 몰려오고 음악이 광장을 가득 채운다. | 당시 사람들은 성 비투스의 저주나 뜨거운 피 때문이라고 믿어서, 광장에 무대와 악단까지 들여왔습니다. | 11 | cinematic historical documentary illustration, 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, temporary wooden stage in a town square, musicians playing, officials trying to control the crowd, more people gathering |
+| 4 | 저녁 무렵의 도시. 연대기 작가가 기록을 남기고, 성당 종탑과 불안한 군중이 배경에 보이며, 도시 전체에 불안과 공포가 깔려 있다. | 하지만 당시 기록은 사람들이 실제로 며칠씩 멈추지 못하고 춤췄다는 점만 보여 줄 뿐, 원인과 사망자 수는 지금도 논쟁 중입니다. | 12 | cinematic historical documentary illustration, 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight fading into dusk, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, chronicler writing by candlelight, tense city atmosphere, church tower silhouette, anxious crowd in the background |
+| 5 | 텅 빈 광장, 버려진 구두와 조용해진 돌바닥. 멀리 성당 종탑만 남고, 도시가 겨우 숨을 고르는 황혼 장면. | 확실한 건 하나입니다. 그 여름, 스트라스부르는 공포에 잠식됐습니다. | 7 | cinematic historical documentary illustration, 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural twilight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, empty square after the frenzy, abandoned shoes on the ground, quiet church spire in the distance |
+
+**선택한 소재 요약**
+- 1518년 스트라스부르에서 실제로 사람들이 통제 불가능하게 춤췄던 사건이다.
+- `확인된 사실`은 사건이 있었고, 당대 기록이 남아 있으며, 당시 사람들이 공포 속에서 대응했다는 점이다.
+- `전승/해석`은 원인이 성 비투스의 저주였는지, 뜨거운 피였는지, 혹은 현대적으로 말하는 집단적 스트레스 반응이었는지이다.
+- 사망자 수도 기록마다 달라서, 정확한 숫자는 단정하지 않는 편이 안전하다.
+
+**참고한 출처**
+- [HISTORY: What Was the Dancing Plague of 1518?](https://www.history.com/articles/what-was-the-dancing-plague-of-1518)
+- [Popular Mechanics: A Woman Began to Dance Against Her Will. Other People Followed, and It Turned Deadly.](https://www.popularmechanics.com/science/a71243117/dancing-plague/)
+
+**왜 쇼츠에 적합한지**
+- 첫 문장부터 강한 훅이 있다. `한 사람이 갑자기 춤을 추기 시작했다`는 설정 자체가 즉시 시선을 끈다.
+- 사건 전개가 빠르다. `1명 → 수십 명 → 수백 명` 구조라 45~60초 안에 압축하기 좋다.
+- 사실과 해석의 경계가 있어, 단순한 괴담이 아니라 `왜 그런 일이 일어났는지`까지 궁금증을 만든다.
+- 시각적으로도 강하다. 광장, 군중, 무대, 악단, 황혼의 빈 광장까지 장면 전환이 명확하다.
+
+**아직 검증이 필요한 표현**
+- `최대 사백 명`이라는 수치
+- `사망자 수`의 정확한 규모
+- `성 비투스의 저주`가 실제 원인처럼 들리지 않도록, 이것은 당시 사람들의 설명이었다는 점
+- `무대와 악단을 들여왔다`는 대응의 구체적 방식과 범위
+- `원인은 집단적 암시다`라는 표현은 현재 유력한 해석이지, 확정된 결론은 아니라는 점
+
+승인하면 다음 단계로 넘어가서, 이 기획안을 기준으로 `썸네일 훅`, `오프닝 3초`, `내레이션 톤`, `자막 전략`까지 이어서 잡겠습니다.

@@ -1,0 +1,70 @@
+{
+  "sceneId": "scene-4-inverted-cycloid",
+  "narration": "뒤집은 사이클로이드에서는 출발점이 달라도 결론은 같습니다. 서로 다른 구슬도 같은 순간에 도착합니다.",
+  "audioFormat": "wav",
+  "audioDuration": 7.6,
+  "durationSeconds": 8,
+  "words": [
+    {
+      "text": "뒤집은",
+      "start": 0.421,
+      "end": 0.762
+    },
+    {
+      "text": "사이클로이드에서는",
+      "start": 0.842,
+      "end": 1.785
+    },
+    {
+      "text": "출발점이",
+      "start": 1.905,
+      "end": 2.487
+    },
+    {
+      "text": "달라도",
+      "start": 2.547,
+      "end": 2.888
+    },
+    {
+      "text": "결론은",
+      "start": 3.148,
+      "end": 3.549
+    },
+    {
+      "text": "같습니다.",
+      "start": 3.609,
+      "end": 4.091
+    },
+    {
+      "text": "서로",
+      "start": 4.833,
+      "end": 5.053
+    },
+    {
+      "text": "다른",
+      "start": 5.113,
+      "end": 5.354
+    },
+    {
+      "text": "구슬도",
+      "start": 5.414,
+      "end": 5.775
+    },
+    {
+      "text": "같은",
+      "start": 5.996,
+      "end": 6.317
+    },
+    {
+      "text": "순간에",
+      "start": 6.397,
+      "end": 6.658
+    },
+    {
+      "text": "도착합니다.",
+      "start": 6.718,
+      "end": 7.6
+    }
+  ],
+  "characters": null
+}

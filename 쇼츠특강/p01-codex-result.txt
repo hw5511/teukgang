@@ -1,0 +1,27 @@
+Implemented the Remotion + Typecast starter in `codex-shorts-student-test-v2`.
+
+What changed:
+- Added project scripts and dependencies in [package.json](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\package.json)
+- Added TypeScript/Remotion config in [tsconfig.json](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\tsconfig.json) and [remotion.config.ts](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\remotion.config.ts)
+- Added `.env.example` with `TYPECAST_API_KEY=your_typecast_api_key_here` in [.env.example](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\.env.example)
+- Added a clean setup guide in [README.md](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\README.md)
+- Added a sample storyboard in [storyboards/sample.storyboard.json](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\storyboards\sample.storyboard.json)
+- Added Remotion entry/composition code in [src/index.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\index.tsx), [src/Root.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\Root.tsx), and [src/compositions/StoryboardComposition.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\compositions\StoryboardComposition.tsx)
+- Added scene/UI helpers in [src/components/scenes/ImageScene.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\components\scenes\ImageScene.tsx), [src/components/scenes/GraphicsScene.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\components\scenes\GraphicsScene.tsx), and [src/components/ui/CaptionBar.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\components\ui\CaptionBar.tsx)
+- Added shared types/helpers in [src/types/storyboard.ts](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\types\storyboard.ts) and [src/lib/storyboard.ts](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\lib\storyboard.ts)
+- Added the Typecast TTS generator in [scripts/generate-tts.ts](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\scripts\generate-tts.ts)
+- Added placeholder asset folders under [public](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\public)
+
+Behavior now:
+- `npm run tts:sample` generates narration into `public/audio/<storyboard-slug>/`
+- If you pass `--write-storyboard`, the script also rewrites the storyboard JSON so the generated audio is wired into Remotion
+- `npm run render:sample` renders `out/sample-short.mp4`
+
+Verification:
+- `npm install` completed successfully
+- `npm run typecheck` passed
+
+Next steps:
+1. Put your real `TYPECAST_API_KEY` into `.env` and replace the placeholder voice ID in [storyboards/sample.storyboard.json](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\storyboards\sample.storyboard.json)
+2. Run `npm run tts:sample`
+3. Run `npm run render:sample`

@@ -1,0 +1,192 @@
+{
+  "projectName": "image-dancing-plague",
+  "voiceId": "tc_69fc0cff784968297fb45daa",
+  "language": "kor",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "strasbourg-hook",
+      "type": "image",
+      "durationSeconds": 6,
+      "headline": "한 여자가 먼저 춤을 시작했다",
+      "caption": "1518년 스트라스부르, 설명할 수 없는 발작이 거리로 번졌다.",
+      "narration": "1518년 스트라스부르의 한 거리에서, 한 여자가 멈추지 못한 채 춤을 추기 시작했습니다.",
+      "imagePrompt": "Cinematic historical documentary illustration of 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, a woman suddenly dancing in a narrow cobblestone street while shocked merchants and children watch from the sides.",
+      "image": {
+        "enabled": true,
+        "source": "images/image-dancing-plague/01-strasbourg-hook.png",
+        "fit": "cover"
+      },
+      "subtitleChunks": [
+        {
+          "text": "1518년 스트라스부르의 한 거리에서,",
+          "startSeconds": 0,
+          "endSeconds": 1.467
+        },
+        {
+          "text": "한 여자가 멈추지 못한 채",
+          "startSeconds": 1.467,
+          "endSeconds": 2.933
+        },
+        {
+          "text": "춤을 추기 시작했습니다.",
+          "startSeconds": 2.933,
+          "endSeconds": 6
+        }
+      ],
+      "audio": {
+        "enabled": true,
+        "source": "audio/image-dancing-plague/strasbourg-hook.wav"
+      }
+    },
+    {
+      "id": "crowd-spread",
+      "type": "image",
+      "durationSeconds": 6.95,
+      "headline": "며칠 뒤, 사람들은 따라 움직였다",
+      "caption": "멈출 수 없는 움직임은 곧 수십 명으로 번졌다.",
+      "narration": "처음엔 광기처럼 보였지만, 며칠 뒤엔 수십 명이 거리에서 함께 흔들렸습니다. 도시는 더 불안해졌습니다.",
+      "imagePrompt": "Cinematic historical documentary illustration of a crowded town square in 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, exhausted townspeople involuntarily dancing, some collapsing and clutching their feet while others look on in fear.",
+      "image": {
+        "enabled": true,
+        "source": "images/image-dancing-plague/02-crowd-spread.png",
+        "fit": "cover"
+      },
+      "subtitleChunks": [
+        {
+          "text": "처음엔 광기처럼 보였지만,",
+          "startSeconds": 0,
+          "endSeconds": 1.668
+        },
+        {
+          "text": "며칠 뒤엔 수십 명이",
+          "startSeconds": 1.668,
+          "endSeconds": 3.336
+        },
+        {
+          "text": "거리에서 함께 흔들렸습니다.",
+          "startSeconds": 3.336,
+          "endSeconds": 5.004
+        },
+        {
+          "text": "도시는 더 불안해졌습니다.",
+          "startSeconds": 5.004,
+          "endSeconds": 6.95
+        }
+      ],
+      "audio": {
+        "enabled": true,
+        "source": "audio/image-dancing-plague/crowd-spread.wav"
+      }
+    },
+    {
+      "id": "officials-attempt-control",
+      "type": "image",
+      "durationSeconds": 6.6,
+      "headline": "도시는 무도장을 끊어내려 했다",
+      "caption": "공무원과 음악가가 개입했지만, 혼란은 더 커졌다.",
+      "narration": "당국은 무도병이라 부르며 광장을 비웠지만, 사람들은 더 깊은 혼란 속으로 들어갔습니다.",
+      "imagePrompt": "Cinematic historical documentary illustration of 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, temporary wooden stage in a town square, musicians playing while officials try to control the crowd and more people gather at the edge of the square.",
+      "image": {
+        "enabled": true,
+        "source": "images/image-dancing-plague/03-officials-attempt-control.png",
+        "fit": "cover"
+      },
+      "subtitleChunks": [
+        {
+          "text": "당국은 무도병이라 부르며 광장을 비웠지만,",
+          "startSeconds": 0,
+          "endSeconds": 2.7
+        },
+        {
+          "text": "사람들은 더 깊은 혼란 속으로 들어갔습니다.",
+          "startSeconds": 2.7,
+          "endSeconds": 6.6
+        }
+      ],
+      "audio": {
+        "enabled": true,
+        "source": "audio/image-dancing-plague/officials-attempt-control.wav"
+      }
+    },
+    {
+      "id": "no-clear-answer",
+      "type": "image",
+      "durationSeconds": 6.25,
+      "headline": "아무도 원인을 설명하지 못했다",
+      "caption": "굶주림, 질병, 공포가 떠돌았지만 단정은 없었다.",
+      "narration": "굶주림과 질병, 공포가 원인으로 거론됐지만, 끝내 누구도 그 이유를 밝히지 못했습니다.",
+      "imagePrompt": "Cinematic historical documentary illustration of a tense 16th-century Strasbourg street at dusk, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural daylight fading into dusk, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, a chronicler writing by candlelight while an anxious crowd lingers in the background and the church tower silhouette rises above the rooftops.",
+      "image": {
+        "enabled": true,
+        "source": "images/image-dancing-plague/04-no-clear-answer.png",
+        "fit": "cover"
+      },
+      "subtitleChunks": [
+        {
+          "text": "굶주림과 질병, 공포가",
+          "startSeconds": 0,
+          "endSeconds": 1.563
+        },
+        {
+          "text": "원인으로 거론됐지만,",
+          "startSeconds": 1.563,
+          "endSeconds": 3.125
+        },
+        {
+          "text": "끝내 누구도",
+          "startSeconds": 3.125,
+          "endSeconds": 4.688
+        },
+        {
+          "text": "그 이유를 밝히지 못했습니다.",
+          "startSeconds": 4.688,
+          "endSeconds": 6.25
+        }
+      ],
+      "audio": {
+        "enabled": true,
+        "source": "audio/image-dancing-plague/no-clear-answer.wav"
+      }
+    },
+    {
+      "id": "aftershock",
+      "type": "image",
+      "durationSeconds": 5.15,
+      "headline": "그날 이후, 도시는 오래 떨었다",
+      "caption": "춤은 끝났지만, 공포는 도시의 기억에 남았다.",
+      "narration": "몇 주 뒤, 춤은 사라졌지만, 스트라스부르는 오랫동안 그날의 공포를 기억했습니다.",
+      "imagePrompt": "Cinematic historical documentary illustration of an empty square after the frenzy in 16th-century Strasbourg, vertical 9:16 composition, muted sepia and slate-blue palette, realistic faces, detailed linen and wool clothing, natural twilight, atmospheric dust, shallow depth of field, no modern objects, no text, high detail, grounded medieval realism, abandoned shoes on the ground, quiet church spire in the distance, the square still and eerie after the panic.",
+      "image": {
+        "enabled": true,
+        "source": "images/image-dancing-plague/05-aftershock.png",
+        "fit": "cover"
+      },
+      "subtitleChunks": [
+        {
+          "text": "몇 주 뒤, 춤은",
+          "startSeconds": 0,
+          "endSeconds": 1.471
+        },
+        {
+          "text": "사라졌지만, 스트라스부르는 오랫동안",
+          "startSeconds": 1.471,
+          "endSeconds": 3.311
+        },
+        {
+          "text": "그날의 공포를 기억했습니다.",
+          "startSeconds": 3.311,
+          "endSeconds": 5.15
+        }
+      ],
+      "audio": {
+        "enabled": true,
+        "source": "audio/image-dancing-plague/aftershock.wav"
+      }
+    }
+  ]
+}

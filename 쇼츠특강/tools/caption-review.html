@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Caption Review</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08111f;
+        --panel: rgba(11, 19, 34, 0.9);
+        --panel-strong: #0f1a2c;
+        --panel-soft: rgba(255, 255, 255, 0.04);
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #e6edf7;
+        --muted: #9fb0c9;
+        --accent: #7dd3fc;
+        --accent-strong: #38bdf8;
+        --danger: #fda4af;
+        --ok: #86efac;
+        --warning: #fde68a;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        --radius: 18px;
+        --radius-sm: 12px;
+        --font: "Aptos", "Segoe UI", "Helvetica Neue", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 30%),
+          radial-gradient(circle at top right, rgba(125, 211, 252, 0.08), transparent 28%),
+          linear-gradient(180deg, #040816 0%, #08111f 40%, #050914 100%);
+        color: var(--text);
+        font-family: var(--font);
+      }
+
+      body {
+        padding: 20px;
+      }
+
+      .app {
+        max-width: 1440px;
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+        padding: 20px 22px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(7, 12, 24, 0.82);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .title {
+        display: grid;
+        gap: 8px;
+      }
+
+      .eyebrow {
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 11px 15px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 140ms ease,
+          border-color 140ms ease,
+          background 140ms ease,
+          opacity 140ms ease;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        border-color: rgba(125, 211, 252, 0.35);
+        background: rgba(125, 211, 252, 0.08);
+      }
+
+      button.primary {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.26), rgba(14, 165, 233, 0.16));
+        border-color: rgba(125, 211, 252, 0.3);
+      }
+
+      button.danger {
+        border-color: rgba(253, 164, 175, 0.25);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
+      }
+
+      .status {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .status.ok {
+        color: var(--ok);
+      }
+
+      .status.warn {
+        color: var(--warning);
+      }
+
+      .status.error {
+        color: var(--danger);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+      }
+
+      .sidebar,
+      .scene {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 16px;
+        padding: 18px;
+      }
+
+      .sidebar h2,
+      .scene h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+      }
+
+      .sidebar p,
+      .hint {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .scene-nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: grid;
+        gap: 4px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .nav-item strong {
+        font-size: 13px;
+      }
+
+      .nav-item span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .content {
+        display: grid;
+        gap: 16px;
+      }
+
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .stat {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .stat .label {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .stat .value {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .scene {
+        padding: 18px;
+      }
+
+      .scene-head {
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .scene-title {
+        display: grid;
+        gap: 6px;
+      }
+
+      .scene-title .id {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-title h3 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .scene-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .badge {
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 11px 12px;
+        font: inherit;
+        outline: none;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: rgba(125, 211, 252, 0.5);
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      }
+
+      textarea {
+        min-height: 92px;
+        resize: vertical;
+      }
+
+      .chunks {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+      }
+
+      .chunks-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .chunks-head h4 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .chunk-table {
+        display: grid;
+        gap: 10px;
+      }
+
+      .chunk-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 120px 120px 80px;
+        gap: 10px;
+        align-items: end;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .chunk-row .field {
+        gap: 4px;
+      }
+
+      .chunk-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .footer-note {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .validation {
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        display: grid;
+        gap: 12px;
+      }
+
+      .validation.ok {
+        border-color: rgba(134, 239, 172, 0.22);
+      }
+
+      .validation.warn {
+        border-color: rgba(253, 230, 138, 0.28);
+        background: rgba(253, 230, 138, 0.05);
+      }
+
+      .validation-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .validation-head strong {
+        font-size: 13px;
+      }
+
+      .validation-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 11px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .validation.ok .validation-pill {
+        color: var(--ok);
+        border-color: rgba(134, 239, 172, 0.25);
+      }
+
+      .validation.warn .validation-pill {
+        color: var(--warning);
+        border-color: rgba(253, 230, 138, 0.3);
+      }
+
+      .validation-line {
+        display: grid;
+        gap: 5px;
+      }
+
+      .validation-line .label {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .validation-line .sentence {
+        margin: 0;
+        line-height: 1.7;
+        font-size: 13px;
+      }
+
+      .issue-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 4px;
+        color: var(--warning);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .scene.has-warning {
+        border-color: rgba(253, 230, 138, 0.32);
+      }
+
+      .placeholder {
+        padding: 18px;
+        border: 1px dashed rgba(255, 255, 255, 0.16);
+        border-radius: var(--radius);
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      @media (max-width: 1120px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+        }
+
+        .summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid,
+        .chunk-row {
+          grid-template-columns: 1fr;
+        }
+
+        .scene-head {
+          flex-direction: column;
+        }
+
+        .scene-badges {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="title">
+          <div class="eyebrow">Storyboard caption review</div>
+          <h1>P02 이미지형 쇼츠 검수 UI</h1>
+          <div class="meta" id="meta">불러오는 중...</div>
+          <div class="status" id="status"></div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="save-btn" type="button">Save JSON</button>
+          <button id="render-btn" type="button" disabled title="Next step only">Render preview later</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <h2>Scenes</h2>
+          <p>씬별 문장, 자막 청크, 시작/종료 시간을 수정하고 JSON으로 저장합니다.</p>
+          <div class="scene-nav" id="scene-nav"></div>
+        </aside>
+
+        <main class="content">
+          <section class="summary" id="summary"></section>
+          <section id="editor"></section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        storyboardPath: "",
+        storyboard: null,
+        dirty: false,
+      };
+
+      const els = {
+        meta: document.getElementById("meta"),
+        status: document.getElementById("status"),
+        saveBtn: document.getElementById("save-btn"),
+        sceneNav: document.getElementById("scene-nav"),
+        summary: document.getElementById("summary"),
+        editor: document.getElementById("editor"),
+      };
+
+      const escapeHtml = (value) =>
+        String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+
+      const clone = (value) => JSON.parse(JSON.stringify(value));
+
+      const normalizeStoryboard = (storyboard) => {
+        return {
+          ...storyboard,
+          scenes: (storyboard.scenes || []).map((scene) => ({
+            ...scene,
+            durationSeconds: Number(scene.durationSeconds ?? 0),
+            headline: scene.headline ?? "",
+            caption: scene.caption ?? "",
+            narration: scene.narration ?? "",
+            imagePrompt: scene.imagePrompt ?? "",
+            subtitleChunks: (scene.subtitleChunks || []).map((chunk) => ({
+              text: chunk.text ?? "",
+              startSeconds: Number(chunk.startSeconds ?? 0),
+              endSeconds: Number(chunk.endSeconds ?? 0),
+            })),
+          })),
+        };
+      };
+
+      const normalizeText = (value) => String(value ?? "").trim().replace(/\s+/g, " ");
+
+      const tokenizeText = (value) =>
+        normalizeText(value)
+          .split(" ")
+          .filter(Boolean);
+
+      const buildChunkSentence = (scene) =>
+        normalizeText((scene.subtitleChunks || []).map((chunk) => normalizeText(chunk.text)).filter(Boolean).join(" "));
+
+      const analyzeScene = (scene) => {
+        const narration = normalizeText(scene.narration);
+        const chunkSentence = buildChunkSentence(scene);
+        const durationSeconds = Number(scene.durationSeconds || 0);
+        const chunks = scene.subtitleChunks || [];
+        const issues = [];
+        const warnings = [];
+        const epsilon = 0.001;
+        let previousEnd = null;
+        let previousLastWord = null;
+
+        chunks.forEach((chunk, index) => {
+          const startSeconds = Number(chunk.startSeconds || 0);
+          const endSeconds = Number(chunk.endSeconds || 0);
+          const words = tokenizeText(chunk.text);
+
+          if (!Number.isFinite(startSeconds) || !Number.isFinite(endSeconds)) {
+            issues.push(`청크 ${index + 1}: 시작/종료 시간이 숫자가 아닙니다.`);
+          } else {
+            if (startSeconds < -epsilon) {
+              issues.push(`청크 ${index + 1}: 시작 시간이 0보다 작습니다.`);
+            }
+            if (endSeconds > durationSeconds + epsilon) {
+              issues.push(`청크 ${index + 1}: 종료 시간이 씬 길이를 넘습니다.`);
+            }
+            if (endSeconds <= startSeconds + epsilon) {
+              issues.push(`청크 ${index + 1}: 종료 시간이 시작 시간보다 뒤에 있어야 합니다.`);
+            }
+            if (previousEnd !== null && startSeconds < previousEnd - epsilon) {
+              issues.push(`청크 ${index + 1}: 이전 청크와 시간이 겹칩니다.`);
+            }
+            previousEnd = endSeconds;
+          }
+
+          if (previousLastWord && words.length > 0 && previousLastWord === words[0]) {
+            warnings.push(`청크 ${index + 1}: 경계 단어 "${previousLastWord}"가 중복됩니다.`);
+          }
+
+          if (words.length > 0) {
+            previousLastWord = words[words.length - 1];
+          }
+        });
+
+        if (chunkSentence !== narration) {
+          issues.push("청크를 이어 붙인 문장이 narration과 다릅니다.");
+        }
+
+        return {
+          narration,
+          chunkSentence,
+          issues,
+          warnings,
+          hasProblem: issues.length > 0 || warnings.length > 0,
+        };
+      };
+
+      const renderValidationPanel = (analysis) => {
+        const hasProblem = analysis.hasProblem;
+        const statusLabel = hasProblem ? "Review" : "OK";
+        const statusClass = hasProblem ? "warn" : "ok";
+        const sentence = analysis.chunkSentence || "청크가 없습니다.";
+        const narration = analysis.narration || "Narration이 비어 있습니다.";
+        const notes = [...analysis.issues, ...analysis.warnings];
+
+        return `
+          <div class="validation ${statusClass}">
+            <div class="validation-head">
+              <strong>청크 검수</strong>
+              <span class="validation-pill">${statusLabel}</span>
+            </div>
+            <div class="validation-line">
+              <div class="label">청크를 이어 붙인 문장</div>
+              <p class="sentence">${escapeHtml(sentence)}</p>
+            </div>
+            <div class="validation-line">
+              <div class="label">Narration</div>
+              <p class="sentence">${escapeHtml(narration)}</p>
+            </div>
+            ${
+              notes.length
+                ? `<ul class="issue-list">${notes.map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`
+                : `<div class="footer-note">청크 순서와 시간 배치가 narration과 맞습니다.</div>`
+            }
+          </div>
+        `;
+      };
+
+      const refreshValidation = () => {
+        if (!state.storyboard) {
+          return;
+        }
+
+        state.storyboard.scenes.forEach((scene, sceneIndex) => {
+          const analysis = analyzeScene(scene);
+          const validationEl = document.querySelector(`[data-validation-for="${sceneIndex}"]`);
+          if (validationEl) {
+            validationEl.innerHTML = renderValidationPanel(analysis);
+          }
+
+          const sceneEl = document.querySelector(`[data-scene-card="${sceneIndex}"]`);
+          if (sceneEl) {
+            sceneEl.classList.toggle("has-warning", analysis.hasProblem);
+          }
+        });
+      };
+
+      const formatSeconds = (value) => {
+        const number = Number(value || 0);
+        return Number.isInteger(number) ? String(number) : number.toFixed(1).replace(/\.0$/, "");
+      };
+
+      const getSummary = () => {
+        const storyboard = state.storyboard;
+        if (!storyboard) {
+          return { scenes: 0, duration: 0, chunks: 0, words: 0 };
+        }
+
+        const scenes = storyboard.scenes.length;
+        const duration = storyboard.scenes.reduce((total, scene) => total + Number(scene.durationSeconds || 0), 0);
+        const chunks = storyboard.scenes.reduce((total, scene) => total + (scene.subtitleChunks || []).length, 0);
+        const words = storyboard.scenes.reduce((total, scene) => {
+          return (
+            total +
+            (scene.narration || "")
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean).length
+          );
+        }, 0);
+
+        return { scenes, duration, chunks, words };
+      };
+
+      const setStatus = (message, kind = "") => {
+        els.status.className = `status ${kind}`.trim();
+        els.status.textContent = message;
+      };
+
+      const render = () => {
+        if (!state.storyboard) {
+          els.meta.textContent = "스토리보드를 불러오는 중...";
+          els.summary.innerHTML = "";
+          els.sceneNav.innerHTML = "";
+          els.editor.innerHTML = '<div class="placeholder">스토리보드가 아직 로드되지 않았습니다.</div>';
+          return;
+        }
+
+        const summary = getSummary();
+        const storyboard = state.storyboard;
+        els.meta.textContent = `${state.storyboardPath} · ${summary.scenes} scenes · ${formatSeconds(summary.duration)}s · ${summary.chunks} subtitle chunks`;
+        els.summary.innerHTML = `
+          <div class="stat">
+            <div class="label">Scenes</div>
+            <div class="value">${summary.scenes}</div>
+          </div>
+          <div class="stat">
+            <div class="label">Total duration</div>
+            <div class="value">${formatSeconds(summary.duration)}s</div>
+          </div>
+          <div class="stat">
+            <div class="label">Subtitle chunks</div>
+            <div class="value">${summary.chunks}</div>
+          </div>
+          <div class="stat">
+            <div class="label">Narration words</div>
+            <div class="value">${summary.words}</div>
+          </div>
+        `;
+
+        els.sceneNav.innerHTML = storyboard.scenes
+          .map(
+            (scene, index) => `
+              <a class="nav-item" href="#scene-${escapeHtml(scene.id)}" data-nav-scene="${index}">
+                <strong>${index + 1}. ${escapeHtml(scene.headline || scene.id)}</strong>
+                <span>${escapeHtml(scene.id)} · ${formatSeconds(scene.durationSeconds)}s · ${scene.subtitleChunks.length} chunks</span>
+              </a>
+            `,
+          )
+          .join("");
+
+        els.editor.innerHTML = storyboard.scenes
+          .map((scene, sceneIndex) => {
+            const chunks = (scene.subtitleChunks || [])
+              .map(
+                (chunk, chunkIndex) => `
+                  <div class="chunk-row">
+                    <div class="field">
+                      <label>Chunk text</label>
+                      <input
+                        data-kind="chunk-text"
+                        data-scene-index="${sceneIndex}"
+                        data-chunk-index="${chunkIndex}"
+                        value="${escapeHtml(chunk.text)}"
+                        placeholder="청크 텍스트"
+                      />
+                    </div>
+                    <div class="field">
+                      <label>Start</label>
+                      <input
+                        data-kind="chunk-start"
+                        data-scene-index="${sceneIndex}"
+                        data-chunk-index="${chunkIndex}"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        value="${escapeHtml(chunk.startSeconds)}"
+                      />
+                    </div>
+                    <div class="field">
+                      <label>End</label>
+                      <input
+                        data-kind="chunk-end"
+                        data-scene-index="${sceneIndex}"
+                        data-chunk-index="${chunkIndex}"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        value="${escapeHtml(chunk.endSeconds)}"
+                      />
+                    </div>
+                    <div class="chunk-actions">
+                      <button
+                        class="danger"
+                        type="button"
+                        data-action="remove-chunk"
+                        data-scene-index="${sceneIndex}"
+                        data-chunk-index="${chunkIndex}"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                `,
+              )
+              .join("");
+
+            return `
+              <article class="scene" id="scene-${escapeHtml(scene.id)}" data-scene-card="${sceneIndex}">
+                <div class="scene-head">
+                  <div class="scene-title">
+                    <div class="id">Scene ${sceneIndex + 1} · ${escapeHtml(scene.id)}</div>
+                    <h3>${escapeHtml(scene.headline || scene.id)}</h3>
+                  </div>
+                  <div class="scene-badges">
+                    <span class="badge">Type: ${escapeHtml(scene.type)}</span>
+                    <span class="badge">Chunks: ${scene.subtitleChunks.length}</span>
+                    <span class="badge">Duration: ${formatSeconds(scene.durationSeconds)}s</span>
+                  </div>
+                </div>
+
+                <div class="grid">
+                  <div class="field">
+                    <label>Scene headline</label>
+                    <input
+                      data-kind="scene-field"
+                      data-scene-index="${sceneIndex}"
+                      data-field="headline"
+                      value="${escapeHtml(scene.headline || "")}"
+                    />
+                  </div>
+
+                  <div class="field">
+                    <label>Duration seconds</label>
+                    <input
+                      data-kind="scene-field"
+                      data-scene-index="${sceneIndex}"
+                      data-field="durationSeconds"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value="${escapeHtml(scene.durationSeconds)}"
+                    />
+                  </div>
+
+                  <div class="field full">
+                    <label>Caption</label>
+                    <textarea
+                      data-kind="scene-field"
+                      data-scene-index="${sceneIndex}"
+                      data-field="caption"
+                    >${escapeHtml(scene.caption || "")}</textarea>
+                  </div>
+
+                  <div class="field full">
+                    <label>Narration</label>
+                    <textarea
+                      data-kind="scene-field"
+                      data-scene-index="${sceneIndex}"
+                      data-field="narration"
+                    >${escapeHtml(scene.narration || "")}</textarea>
+                  </div>
+
+                  <div class="field full">
+                    <label>Image prompt</label>
+                    <textarea
+                      data-kind="scene-field"
+                      data-scene-index="${sceneIndex}"
+                      data-field="imagePrompt"
+                    >${escapeHtml(scene.imagePrompt || "")}</textarea>
+                  </div>
+                </div>
+
+                <div class="chunks">
+                  <div class="chunks-head">
+                    <h4>Subtitle chunks</h4>
+                    <button
+                      type="button"
+                      data-action="add-chunk"
+                      data-scene-index="${sceneIndex}"
+                    >
+                      + Add chunk
+                    </button>
+                  </div>
+                  <div class="chunk-table">
+                    ${chunks || '<div class="placeholder">No chunks yet.</div>'}
+                  </div>
+                </div>
+                <div class="footer-note">Tip: keep each chunk readable, short, and timed within the scene duration.</div>
+                <div data-validation-for="${sceneIndex}"></div>
+              </article>
+            `;
+          })
+          .join("");
+      };
+
+      const updateSceneField = (sceneIndex, field, value) => {
+        const storyboard = state.storyboard;
+        if (!storyboard) return;
+        const scene = storyboard.scenes[sceneIndex];
+        if (!scene) return;
+        if (field === "durationSeconds") {
+          scene[field] = Number(value || 0);
+        } else {
+          scene[field] = value;
+        }
+        state.dirty = true;
+        setStatus("Unsaved changes", "warn");
+        refreshValidation();
+      };
+
+      const updateChunkField = (sceneIndex, chunkIndex, field, value) => {
+        const storyboard = state.storyboard;
+        if (!storyboard) return;
+        const scene = storyboard.scenes[sceneIndex];
+        const chunk = scene?.subtitleChunks?.[chunkIndex];
+        if (!chunk) return;
+        if (field === "startSeconds" || field === "endSeconds") {
+          chunk[field] = Number(value || 0);
+        } else {
+          chunk[field] = value;
+        }
+        state.dirty = true;
+        setStatus("Unsaved changes", "warn");
+        refreshValidation();
+      };
+
+      const addChunk = (sceneIndex) => {
+        const storyboard = state.storyboard;
+        if (!storyboard) return;
+        const scene = storyboard.scenes[sceneIndex];
+        if (!scene) return;
+        const duration = Number(scene.durationSeconds || 0);
+        const chunks = scene.subtitleChunks || [];
+        const lastChunk = chunks[chunks.length - 1];
+        const start = lastChunk ? Number(lastChunk.endSeconds || 0) : 0;
+        const nextEnd = Math.min(duration || start + 2, start + 2);
+        chunks.push({
+          text: "",
+          startSeconds: start,
+          endSeconds: Number.isFinite(nextEnd) ? nextEnd : start + 2,
+        });
+        scene.subtitleChunks = chunks;
+        state.dirty = true;
+        render();
+        refreshValidation();
+        setStatus("Unsaved changes", "warn");
+      };
+
+      const removeChunk = (sceneIndex, chunkIndex) => {
+        const storyboard = state.storyboard;
+        if (!storyboard) return;
+        const scene = storyboard.scenes[sceneIndex];
+        if (!scene) return;
+        scene.subtitleChunks = (scene.subtitleChunks || []).filter((_, index) => index !== chunkIndex);
+        state.dirty = true;
+        render();
+        refreshValidation();
+        setStatus("Unsaved changes", "warn");
+      };
+
+      const saveStoryboard = async () => {
+        if (!state.storyboard) {
+          setStatus("Nothing to save.", "error");
+          return;
+        }
+
+        try {
+          refreshValidation();
+          els.saveBtn.disabled = true;
+          setStatus("Saving JSON...", "");
+
+          const response = await fetch("/api/storyboard", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ storyboard: state.storyboard }),
+          });
+
+          const result = await response.json();
+          if (!response.ok || !result.ok) {
+            throw new Error(result.error || `Save failed with status ${response.status}`);
+          }
+
+          state.dirty = false;
+          setStatus(`Saved to ${result.storyboardPath}`, "ok");
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : String(error), "error");
+        } finally {
+          els.saveBtn.disabled = false;
+        }
+      };
+
+      document.addEventListener("input", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const kind = target.dataset.kind;
+        const sceneIndex = Number(target.dataset.sceneIndex);
+        if (!kind || Number.isNaN(sceneIndex)) return;
+
+        if (kind === "scene-field") {
+          updateSceneField(sceneIndex, target.dataset.field, target.value);
+          return;
+        }
+
+        if (kind === "chunk-text" || kind === "chunk-start" || kind === "chunk-end") {
+          const chunkIndex = Number(target.dataset.chunkIndex);
+          if (Number.isNaN(chunkIndex)) return;
+          const field =
+            kind === "chunk-text"
+              ? "text"
+              : kind === "chunk-start"
+                ? "startSeconds"
+                : "endSeconds";
+          updateChunkField(sceneIndex, chunkIndex, field, target.value);
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const action = target.dataset.action;
+        if (!action) return;
+        const sceneIndex = Number(target.dataset.sceneIndex);
+        if (Number.isNaN(sceneIndex)) return;
+
+        if (action === "add-chunk") {
+          addChunk(sceneIndex);
+        } else if (action === "remove-chunk") {
+          const chunkIndex = Number(target.dataset.chunkIndex);
+          if (!Number.isNaN(chunkIndex)) {
+            removeChunk(sceneIndex, chunkIndex);
+          }
+        }
+      });
+
+      els.saveBtn.addEventListener("click", saveStoryboard);
+
+      const bootstrap = async () => {
+        try {
+          setStatus("Loading storyboard...", "");
+          const response = await fetch("/api/storyboard");
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.error || `Failed to load storyboard (${response.status})`);
+          }
+
+          state.storyboardPath = payload.storyboardPath;
+          state.storyboard = normalizeStoryboard(clone(payload.storyboard));
+          render();
+          refreshValidation();
+          setStatus("Loaded storyboard JSON.", "ok");
+        } catch (error) {
+          els.editor.innerHTML = `<div class="placeholder">${escapeHtml(error instanceof Error ? error.message : String(error))}</div>`;
+          setStatus(error instanceof Error ? error.message : String(error), "error");
+        }
+      };
+
+      bootstrap();
+    </script>
+  </body>
+</html>

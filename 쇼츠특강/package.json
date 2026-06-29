@@ -1,0 +1,31 @@
+{
+  "name": "codex-shorts-student-test-v2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx remotion studio src/index.tsx",
+    "preview": "npx remotion preview src/index.tsx",
+    "caption:review": "node tools/caption-review-server.mjs",
+    "caption:review:graphics": "node tools/caption-review-server.mjs --storyboard storyboards/graphics-cycloid.storyboard.json --port 8788",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "npm run typecheck",
+    "render": "npx remotion render src/index.tsx",
+    "render:sample": "npx remotion render src/index.tsx SampleShort out/sample-short.mp4",
+    "tts": "tsx scripts/generate-tts.ts",
+    "tts:sample": "tsx scripts/generate-tts.ts --storyboard storyboards/sample.storyboard.json --write-storyboard"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "@remotion/cli": "4.0.484",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

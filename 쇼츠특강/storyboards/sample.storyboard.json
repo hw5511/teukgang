@@ -1,0 +1,72 @@
+{
+  "projectName": "codex-shorts-student-test-v2",
+  "voiceId": "tc_your_voice_id_here",
+  "language": "eng",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "image",
+      "durationFrames": 120,
+      "headline": "Build a short in one pass",
+      "caption": "Storyboard, Typecast narration, and Remotion render in one project.",
+      "narration": "This starter connects a storyboard to Typecast narration and Remotion video.",
+      "image": {
+        "enabled": false,
+        "source": "images/hook.jpg",
+        "fit": "cover"
+      },
+      "sfx": {
+        "enabled": false,
+        "source": "sfx/whoosh.mp3"
+      },
+      "transition": {
+        "in": "fade",
+        "out": "slide"
+      }
+    },
+    {
+      "id": "proof",
+      "type": "graphics",
+      "durationFrames": 150,
+      "headline": "Typecast keeps narration in sync",
+      "caption": "Generate audio from the same storyboard text and keep timing predictable.",
+      "narration": "When the narration lives in the storyboard, the video timeline stays easy to control.",
+      "graphics": {
+        "metricLabel": "Retention",
+        "metricValue": 87,
+        "bars": [0.28, 0.46, 0.64, 0.83, 0.92],
+        "line": [12, 18, 25, 33, 44, 59]
+      },
+      "transition": {
+        "in": "cut",
+        "out": "fade"
+      }
+    },
+    {
+      "id": "cta",
+      "type": "image",
+      "durationFrames": 120,
+      "headline": "Render the MP4 when you are ready",
+      "caption": "Use the generated audio file in public/audio and export the final short.",
+      "narration": "Generate the audio first, then render the mp4 from the same storyboard.",
+      "image": {
+        "enabled": false,
+        "source": "images/cta.png",
+        "fit": "contain"
+      },
+      "sfx": {
+        "enabled": false,
+        "source": "sfx/pop.mp3"
+      },
+      "transition": {
+        "in": "fade",
+        "out": "cut"
+      }
+    }
+  ]
+}

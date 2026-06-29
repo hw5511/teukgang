@@ -1,0 +1,13 @@
+고친 청크는 다음처럼 정리했습니다.
+
+- [storyboards/graphics-cycloid.storyboard.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/graphics-cycloid.storyboard.json)
+  - `summary`: `"가장 짧은 길이 아니라"`를 한 chunk로 묶고, 나머지 chunk도 narration과 정확히 이어지도록 공백을 조정
+  - 나머지 씬들도 `subtitleChunks.join('') === narration`이 되도록 공백 분절만 정리
+
+- [assets/graphics-cycloid/graphics-storyboard.md](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/graphics-cycloid/graphics-storyboard.md)
+  - summary의 청크 목록을 `가장 짧은 길이 아니라` 기준으로 맞춤
+
+검증 결과:
+- JSON 파싱: 통과
+- 모든 scene의 chunks 재조합 == narration: 통과
+- `npm run typecheck`: 통과

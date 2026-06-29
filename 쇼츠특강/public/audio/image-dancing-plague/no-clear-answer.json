@@ -1,0 +1,65 @@
+{
+  "sceneId": "no-clear-answer",
+  "narration": "굶주림과 질병, 공포가 원인으로 거론됐지만, 끝내 누구도 그 이유를 밝히지 못했습니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6.25,
+  "durationSeconds": 12,
+  "words": [
+    {
+      "text": "굶주림과",
+      "start": 0.2,
+      "end": 0.801
+    },
+    {
+      "text": "질병,",
+      "start": 0.861,
+      "end": 1.282
+    },
+    {
+      "text": "공포가",
+      "start": 1.402,
+      "end": 1.883
+    },
+    {
+      "text": "원인으로",
+      "start": 1.963,
+      "end": 2.404
+    },
+    {
+      "text": "거론됐지만,",
+      "start": 2.464,
+      "end": 3.145
+    },
+    {
+      "text": "끝내",
+      "start": 3.446,
+      "end": 3.766
+    },
+    {
+      "text": "누구도",
+      "start": 3.866,
+      "end": 4.187
+    },
+    {
+      "text": "그",
+      "start": 4.307,
+      "end": 4.407
+    },
+    {
+      "text": "이유를",
+      "start": 4.527,
+      "end": 4.808
+    },
+    {
+      "text": "밝히지",
+      "start": 4.868,
+      "end": 5.308
+    },
+    {
+      "text": "못했습니다.",
+      "start": 5.369,
+      "end": 6.25
+    }
+  ],
+  "characters": null
+}

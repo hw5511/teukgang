@@ -1,0 +1,10 @@
+고친 파일:
+- [assets/image-dancing-plague/image-prompts.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/image-dancing-plague/image-prompts.json)
+- [assets/image-dancing-plague/image-prompts.md](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/image-dancing-plague/image-prompts.md)
+
+검증 결과:
+- Node.js `fs.readFileSync(..., "utf8") + JSON.parse`로 [storyboards/image-dancing-plague.storyboard.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/image-dancing-plague.storyboard.json) 파싱 성공
+- scene 수 5개, `image-prompts.json`의 `images` 수 5개로 일치
+- `image-prompts.json` / `image-prompts.md`에서 금지 패턴 `???`, `�`, `怨`, `媛`, `遺`, `瑜`, `쇱` 미검출
+- `npm run typecheck` 통과
+

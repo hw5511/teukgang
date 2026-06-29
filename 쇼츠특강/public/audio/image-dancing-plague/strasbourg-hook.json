@@ -1,0 +1,70 @@
+{
+  "sceneId": "strasbourg-hook",
+  "narration": "1518년 스트라스부르의 한 거리에서, 한 여자가 멈추지 못한 채 춤을 추기 시작했습니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6,
+  "durationSeconds": 9,
+  "words": [
+    {
+      "text": "1518년",
+      "start": 0.181,
+      "end": 1.003
+    },
+    {
+      "text": "스트라스부르의",
+      "start": 1.064,
+      "end": 1.666
+    },
+    {
+      "text": "한",
+      "start": 1.726,
+      "end": 1.866
+    },
+    {
+      "text": "거리에서,",
+      "start": 1.926,
+      "end": 2.368
+    },
+    {
+      "text": "한",
+      "start": 2.749,
+      "end": 2.89
+    },
+    {
+      "text": "여자가",
+      "start": 2.95,
+      "end": 3.271
+    },
+    {
+      "text": "멈추지",
+      "start": 3.351,
+      "end": 3.773
+    },
+    {
+      "text": "못한",
+      "start": 3.833,
+      "end": 4.094
+    },
+    {
+      "text": "채",
+      "start": 4.154,
+      "end": 4.274
+    },
+    {
+      "text": "춤을",
+      "start": 4.575,
+      "end": 4.836
+    },
+    {
+      "text": "추기",
+      "start": 4.896,
+      "end": 5.077
+    },
+    {
+      "text": "시작했습니다.",
+      "start": 5.137,
+      "end": 6
+    }
+  ],
+  "characters": null
+}

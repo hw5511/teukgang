@@ -1,0 +1,60 @@
+{
+  "sceneId": "aftershock",
+  "narration": "몇 주 뒤, 춤은 사라졌지만, 스트라스부르는 오랫동안 그날의 공포를 기억했습니다.",
+  "audioFormat": "wav",
+  "audioDuration": 5.15,
+  "durationSeconds": 7,
+  "words": [
+    {
+      "text": "몇",
+      "start": 0.2,
+      "end": 0.321
+    },
+    {
+      "text": "주",
+      "start": 0.381,
+      "end": 0.441
+    },
+    {
+      "text": "뒤,",
+      "start": 0.501,
+      "end": 0.581
+    },
+    {
+      "text": "춤은",
+      "start": 0.681,
+      "end": 0.942
+    },
+    {
+      "text": "사라졌지만,",
+      "start": 1.002,
+      "end": 1.623
+    },
+    {
+      "text": "스트라스부르는",
+      "start": 2.004,
+      "end": 2.705
+    },
+    {
+      "text": "오랫동안",
+      "start": 2.825,
+      "end": 3.306
+    },
+    {
+      "text": "그날의",
+      "start": 3.407,
+      "end": 3.707
+    },
+    {
+      "text": "공포를",
+      "start": 3.767,
+      "end": 4.188
+    },
+    {
+      "text": "기억했습니다.",
+      "start": 4.248,
+      "end": 5.15
+    }
+  ],
+  "characters": null
+}

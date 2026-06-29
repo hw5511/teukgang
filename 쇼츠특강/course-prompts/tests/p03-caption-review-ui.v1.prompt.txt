@@ -1,0 +1,42 @@
+P02에서 만든 이미지 생성형 쇼츠 기획안을 바탕으로, 대본과 자막 청크를 사람이 검수할 수 있는 로컬 웹 UI를 만들어줘.
+
+중요:
+- 아직 이미지 생성, Typecast TTS 호출, 영상 렌더링은 하지 마.
+- 이번 단계는 "검수 UI + 저장 가능한 JSON"까지만 만든다.
+- API 키를 출력하거나 파일에 하드코딩하지 마.
+- 현재 폴더 안에서만 작업해줘.
+- 기존 Remotion/Typecast starter 구조를 유지해줘.
+
+먼저 아래 파일을 읽어 기획안을 확인해줘.
+- course-prompts/tests/p02-image-plan.v1.result.txt
+
+해야 할 일:
+1. P02 기획안을 기반으로 이미지형 쇼츠 storyboard JSON을 만들어줘.
+   - 저장 위치: storyboards/image-dancing-plague.storyboard.json
+   - 1080x1920, 30fps 기준
+   - 각 씬에는 id, type, durationSeconds, headline, caption, narration, image prompt, subtitle chunks를 포함해줘.
+   - 자막 chunks는 처음에는 자연스러운 3~4단어 단위로 나누되, 문장을 어색하게 자르지 마.
+   - "말이 안되는/ 것 같죠"처럼 조사가 앞뒤로 찢어지는 분할을 피해야 해.
+
+2. 브라우저에서 자막 청크를 수동으로 수정할 수 있는 로컬 웹 UI를 만들어줘.
+   - 저장 위치 예시: tools/caption-review-server.mjs, tools/caption-review.html
+   - UI에서 씬별 narration 전체 문장과 subtitle chunks를 볼 수 있어야 해.
+   - chunks 텍스트, 시작초, 종료초를 수정할 수 있어야 해.
+   - 씬별 durationSeconds도 수정할 수 있어야 해.
+   - 저장 버튼을 누르면 storyboards/image-dancing-plague.storyboard.json에 반영되게 해줘.
+   - 저장 후 화면에서 성공/실패 메시지를 보여줘.
+   - 나중 단계에서 렌더 버튼을 연결할 수 있도록 버튼 자리만 만들어도 좋지만, 이번 단계에서는 렌더 실행까지 하지 마.
+
+3. package.json에 UI 실행 스크립트를 추가해줘.
+   - 예: "caption:review": "node tools/caption-review-server.mjs"
+
+4. 구현 후 검증해줘.
+   - JSON 파싱이 되는지 확인
+   - npm run typecheck 실행
+   - 서버가 최소한 문법 오류 없이 시작 가능한지 확인
+
+마지막 응답에는 다음만 정리해줘.
+- 만든 파일
+- 실행 방법
+- 검증 결과
+- 다음 단계에서 할 일

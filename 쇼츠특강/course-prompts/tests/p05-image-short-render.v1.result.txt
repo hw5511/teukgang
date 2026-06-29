@@ -1,0 +1,18 @@
+수정/생성한 파일:
+- [storyboards/image-dancing-plague.storyboard.json](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\storyboards\image-dancing-plague.storyboard.json)
+- [scripts/generate-tts.ts](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\scripts\generate-tts.ts)
+- [src/Root.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\Root.tsx)
+- [src/compositions/ImageDancingPlagueShort.tsx](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\src\compositions\ImageDancingPlagueShort.tsx)
+- [public/audio/image-dancing-plague/](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\public\audio\image-dancing-plague)
+- [out/image-dancing-plague-still.png](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\out\image-dancing-plague-still.png)
+
+출력 MP4:
+- [out/image-dancing-plague-short.mp4](C:\Users\yangh\woohee_dev\codex-shorts-student-test-v2\out\image-dancing-plague-short.mp4)
+
+검증 결과:
+- `npm run typecheck` 통과
+- storyboard JSON 파싱 통과
+- 이미지 5개 존재 확인
+- 오디오 5개 존재 확인
+- Remotion still 렌더 성공
+- Remotion MP4 렌더 성공

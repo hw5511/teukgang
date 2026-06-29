@@ -1,0 +1,42 @@
+검수 완료된 storyboard JSON을 바탕으로 이미지 생성용 에셋 대기열을 만들어줘.
+
+중요:
+- 아직 실제 이미지 생성은 하지 마.
+- Typecast TTS 호출도 하지 마.
+- 영상 렌더링도 하지 마.
+- 현재 폴더 안에서만 작업해줘.
+- API 키를 출력하거나 파일에 하드코딩하지 마.
+
+입력 파일:
+- storyboards/image-dancing-plague.storyboard.json
+
+해야 할 일:
+1. 각 scene의 imagePrompt를 이미지 생성 도구에 바로 넣을 수 있도록 정리해줘.
+2. 장면별 이미지 파일명을 확정해줘.
+   - 저장 예정 위치: public/images/image-dancing-plague/
+   - 파일명 예시: 01-strasbourg-hook.png
+3. 다음 파일을 만들어줘.
+   - assets/image-dancing-plague/image-prompts.json
+   - assets/image-dancing-plague/image-prompts.md
+4. image-prompts.json에는 다음 정보를 포함해줘.
+   - projectName
+   - outputDir
+   - styleGuide
+   - images 배열
+     - sceneId
+     - sceneNumber
+     - narration
+     - outputFile
+     - prompt
+     - negativePrompt
+5. image-prompts.md에는 수업 중 사람이 보기 쉽게 장면별 프롬프트를 정리해줘.
+6. storyboard JSON에도 각 scene.image.source가 확정 파일명으로 들어가게 업데이트해줘.
+   - image.enabled는 false로 둬. 실제 이미지 파일이 아직 없기 때문이야.
+   - source는 images/image-dancing-plague/01-strasbourg-hook.png 같은 Remotion staticFile 기준 경로로 써줘.
+
+검증:
+- JSON 파싱
+- npm run typecheck
+- storyboard의 scene 수와 image-prompts.json의 images 수가 같은지 확인
+
+마지막 응답에는 만든 파일, 이미지 저장 예정 경로, 검증 결과만 정리해줘.

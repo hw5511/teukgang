@@ -1,0 +1,23 @@
+P07 그래픽형 storyboard의 subtitleChunks를 한 번 더 자연스럽게 고쳐줘.
+
+현재 문제:
+- 마지막 씬이 "가장 짧은 길이" / "아니라 속도를 먼저"처럼 나뉘어 있어, "길이 아니라"가 찢겨 보인다.
+
+수정 대상:
+- storyboards/graphics-cycloid.storyboard.json
+- assets/graphics-cycloid/graphics-storyboard.md
+
+수정 규칙:
+- chunk를 이어 붙이면 narration과 정확히 같아야 한다.
+- 중복/누락 금지.
+- 조사와 서술 연결이 어색하게 찢어지면 안 된다.
+- "가장 짧은 길이 아니라"처럼 문법적으로 한 덩어리인 표현은 같은 chunk에 둔다.
+- 전체 UI와 서버 구조는 그대로 유지한다.
+- Typecast TTS 호출과 영상 렌더링은 하지 않는다.
+
+검증:
+- JSON 파싱
+- 모든 scene에서 chunks를 이어 붙인 문장이 narration과 정확히 같은지 확인
+- npm run typecheck
+
+마지막 응답에는 고친 청크와 검증 결과만 짧게 정리해줘.

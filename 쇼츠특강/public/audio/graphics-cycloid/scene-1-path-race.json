@@ -1,0 +1,85 @@
+{
+  "sceneId": "scene-1-path-race",
+  "narration": "세 경로를 동시에 놓아 보면 답은 바로 보입니다. 사이클로이드는 더 길어 보여도 가장 먼저 도착합니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6.95,
+  "durationSeconds": 7.8,
+  "words": [
+    {
+      "text": "세",
+      "start": 0.26,
+      "end": 0.361
+    },
+    {
+      "text": "경로를",
+      "start": 0.501,
+      "end": 0.921
+    },
+    {
+      "text": "동시에",
+      "start": 1.001,
+      "end": 1.262
+    },
+    {
+      "text": "놓아",
+      "start": 1.322,
+      "end": 1.462
+    },
+    {
+      "text": "보면",
+      "start": 1.522,
+      "end": 1.783
+    },
+    {
+      "text": "답은",
+      "start": 1.903,
+      "end": 2.203
+    },
+    {
+      "text": "바로",
+      "start": 2.363,
+      "end": 2.624
+    },
+    {
+      "text": "보입니다.",
+      "start": 2.724,
+      "end": 3.124
+    },
+    {
+      "text": "사이클로이드는",
+      "start": 3.645,
+      "end": 4.366
+    },
+    {
+      "text": "더",
+      "start": 4.446,
+      "end": 4.547
+    },
+    {
+      "text": "길어",
+      "start": 4.667,
+      "end": 4.887
+    },
+    {
+      "text": "보여도",
+      "start": 4.947,
+      "end": 5.228
+    },
+    {
+      "text": "가장",
+      "start": 5.368,
+      "end": 5.688
+    },
+    {
+      "text": "먼저",
+      "start": 5.768,
+      "end": 6.129
+    },
+    {
+      "text": "도착합니다.",
+      "start": 6.189,
+      "end": 6.95
+    }
+  ],
+  "characters": null
+}

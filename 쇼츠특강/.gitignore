@@ -1,0 +1,9 @@
+node_modules
+out
+.env
+dist
+*.mp4
+*.mov
+*.webm
+*.wav
+*.mp3

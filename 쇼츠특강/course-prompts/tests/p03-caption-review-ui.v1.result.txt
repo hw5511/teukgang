@@ -1,0 +1,22 @@
+**만든 파일**
+- [storyboards/image-dancing-plague.storyboard.json](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/image-dancing-plague.storyboard.json)
+- [tools/caption-review-server.mjs](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/tools/caption-review-server.mjs)
+- [tools/caption-review.html](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/tools/caption-review.html)
+- [package.json](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/package.json)
+- [src/types/storyboard.ts](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/src/types/storyboard.ts)
+
+**실행 방법**
+- `npm run caption:review`
+- 브라우저에서 `http://127.0.0.1:8787` 열기
+- 씬별 `headline`, `caption`, `narration`, `imagePrompt`, `durationSeconds`, `subtitle chunks` 수정 후 `Save JSON` 클릭
+
+**검증 결과**
+- `storyboards/image-dancing-plague.storyboard.json` JSON 파싱 성공
+- `npm run typecheck` 성공
+- `tools/caption-review-server.mjs` 문법 체크 성공
+- 서버 실행 후 `/healthz` 응답 `ok` 확인
+- `tools/caption-review.html` 인라인 스크립트 문법 파싱 성공
+
+**다음 단계에서 할 일**
+1. 검수된 storyboard를 Remotion composition에 연결해서 미리보기까지 이어가기
+2. 이미지 생성, Typecast TTS, 자막 타이밍 자동화 단계를 분리해서 붙이기

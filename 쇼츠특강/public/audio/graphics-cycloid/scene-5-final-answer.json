@@ -1,0 +1,55 @@
+{
+  "sceneId": "scene-5-final-answer",
+  "narration": "브라키스토크론의 답은 분명합니다. 가장 빠른 길은 직선이 아니라, 사이클로이드입니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6.05,
+  "durationSeconds": 6.2,
+  "words": [
+    {
+      "text": "브라키스토크론의",
+      "start": 0.18,
+      "end": 1.042
+    },
+    {
+      "text": "답은",
+      "start": 1.102,
+      "end": 1.362
+    },
+    {
+      "text": "분명합니다.",
+      "start": 1.442,
+      "end": 2.063
+    },
+    {
+      "text": "가장",
+      "start": 2.524,
+      "end": 2.885
+    },
+    {
+      "text": "빠른",
+      "start": 2.945,
+      "end": 3.245
+    },
+    {
+      "text": "길은",
+      "start": 3.305,
+      "end": 3.526
+    },
+    {
+      "text": "직선이",
+      "start": 3.586,
+      "end": 4.047
+    },
+    {
+      "text": "아니라,",
+      "start": 4.107,
+      "end": 4.367
+    },
+    {
+      "text": "사이클로이드입니다.",
+      "start": 4.848,
+      "end": 6.05
+    }
+  ],
+  "characters": null
+}

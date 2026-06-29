@@ -1,0 +1,18 @@
+만든 파일
+- [assets/image-dancing-plague/image-prompts.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/image-dancing-plague/image-prompts.json)
+- [assets/image-dancing-plague/image-prompts.md](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/image-dancing-plague/image-prompts.md)
+- [storyboards/image-dancing-plague.storyboard.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/image-dancing-plague.storyboard.json) 업데이트 완료
+
+이미지 저장 예정 경로
+- `public/images/image-dancing-plague/`
+- 확정 파일명:
+  - `01-strasbourg-hook.png`
+  - `02-crowd-spread.png`
+  - `03-officials-attempt-control.png`
+  - `04-no-clear-answer.png`
+  - `05-aftershock.png`
+
+검증 결과
+- JSON 파싱 성공
+- scene 수 5개, `image-prompts.json`의 `images` 수 5개로 일치
+- `npm run typecheck` 통과

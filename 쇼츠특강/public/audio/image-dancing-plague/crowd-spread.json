@@ -1,0 +1,75 @@
+{
+  "sceneId": "crowd-spread",
+  "narration": "처음엔 광기처럼 보였지만, 며칠 뒤엔 수십 명이 거리에서 함께 흔들렸습니다. 도시는 더 불안해졌습니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6.95,
+  "durationSeconds": 10,
+  "words": [
+    {
+      "text": "처음엔",
+      "start": 0.2,
+      "end": 0.561
+    },
+    {
+      "text": "광기처럼",
+      "start": 0.621,
+      "end": 1.202
+    },
+    {
+      "text": "보였지만,",
+      "start": 1.262,
+      "end": 1.763
+    },
+    {
+      "text": "며칠",
+      "start": 2.123,
+      "end": 2.423
+    },
+    {
+      "text": "뒤엔",
+      "start": 2.484,
+      "end": 2.684
+    },
+    {
+      "text": "수십",
+      "start": 2.744,
+      "end": 2.984
+    },
+    {
+      "text": "명이",
+      "start": 3.044,
+      "end": 3.265
+    },
+    {
+      "text": "거리에서",
+      "start": 3.325,
+      "end": 3.725
+    },
+    {
+      "text": "함께",
+      "start": 3.785,
+      "end": 4.046
+    },
+    {
+      "text": "흔들렸습니다.",
+      "start": 4.106,
+      "end": 4.787
+    },
+    {
+      "text": "도시는",
+      "start": 5.308,
+      "end": 5.708
+    },
+    {
+      "text": "더",
+      "start": 5.768,
+      "end": 5.868
+    },
+    {
+      "text": "불안해졌습니다.",
+      "start": 5.989,
+      "end": 6.95
+    }
+  ],
+  "characters": null
+}

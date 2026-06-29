@@ -1,0 +1,10 @@
+수정 완료:
+- [`storyboards/graphics-cycloid.storyboard.json`](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/graphics-cycloid.storyboard.json)의 모든 `subtitleChunks.text` 앞뒤 공백을 제거했습니다.
+- [`assets/graphics-cycloid/graphics-storyboard.md`](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/graphics-cycloid/graphics-storyboard.md)의 검수 기준을 `chunks.join(" ")` 후 여러 공백 정규화로 비교하도록 정리했습니다.
+
+검증 결과:
+- JSON 파싱 OK
+- 모든 `subtitleChunks.text`에 선행/후행 공백 없음
+- 모든 scene에서 `normalize(chunks.join(" ")) === normalize(narration)` 확인 완료
+- `npm run typecheck` 통과
+

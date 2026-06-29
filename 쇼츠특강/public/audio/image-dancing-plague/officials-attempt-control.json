@@ -1,0 +1,65 @@
+{
+  "sceneId": "officials-attempt-control",
+  "narration": "당국은 무도병이라 부르며 광장을 비웠지만, 사람들은 더 깊은 혼란 속으로 들어갔습니다.",
+  "audioFormat": "wav",
+  "audioDuration": 6.6,
+  "durationSeconds": 11,
+  "words": [
+    {
+      "text": "당국은",
+      "start": 0.201,
+      "end": 0.702
+    },
+    {
+      "text": "무도병이라",
+      "start": 0.863,
+      "end": 1.505
+    },
+    {
+      "text": "부르며",
+      "start": 1.565,
+      "end": 1.906
+    },
+    {
+      "text": "광장을",
+      "start": 2.026,
+      "end": 2.508
+    },
+    {
+      "text": "비웠지만,",
+      "start": 2.568,
+      "end": 3.21
+    },
+    {
+      "text": "사람들은",
+      "start": 3.551,
+      "end": 4.133
+    },
+    {
+      "text": "더",
+      "start": 4.233,
+      "end": 4.333
+    },
+    {
+      "text": "깊은",
+      "start": 4.514,
+      "end": 4.855
+    },
+    {
+      "text": "혼란",
+      "start": 4.915,
+      "end": 5.236
+    },
+    {
+      "text": "속으로",
+      "start": 5.296,
+      "end": 5.597
+    },
+    {
+      "text": "들어갔습니다.",
+      "start": 5.657,
+      "end": 6.6
+    }
+  ],
+  "characters": null
+}

@@ -1,0 +1,75 @@
+{
+  "sceneId": "scene-2-length-vs-time",
+  "narration": "길이가 짧다고 항상 빠른 것은 아닙니다. 사이클로이드는 더 길어도 시간은 가장 짧게 만듭니다.",
+  "audioFormat": "wav",
+  "audioDuration": 7.5,
+  "durationSeconds": 8,
+  "words": [
+    {
+      "text": "길이가",
+      "start": 0.241,
+      "end": 0.541
+    },
+    {
+      "text": "짧다고",
+      "start": 0.602,
+      "end": 1.143
+    },
+    {
+      "text": "항상",
+      "start": 1.263,
+      "end": 1.684
+    },
+    {
+      "text": "빠른",
+      "start": 1.745,
+      "end": 2.025
+    },
+    {
+      "text": "것은",
+      "start": 2.086,
+      "end": 2.306
+    },
+    {
+      "text": "아닙니다.",
+      "start": 2.366,
+      "end": 2.767
+    },
+    {
+      "text": "사이클로이드는",
+      "start": 3.369,
+      "end": 4.171
+    },
+    {
+      "text": "더",
+      "start": 4.332,
+      "end": 4.472
+    },
+    {
+      "text": "길어도",
+      "start": 4.672,
+      "end": 5.033
+    },
+    {
+      "text": "시간은",
+      "start": 5.334,
+      "end": 5.735
+    },
+    {
+      "text": "가장",
+      "start": 5.856,
+      "end": 6.237
+    },
+    {
+      "text": "짧게",
+      "start": 6.317,
+      "end": 6.658
+    },
+    {
+      "text": "만듭니다.",
+      "start": 6.718,
+      "end": 7.5
+    }
+  ],
+  "characters": null
+}

@@ -1,0 +1,25 @@
+P07 그래픽형 storyboard의 subtitleChunks를 다시 정리해줘.
+
+현재 문제:
+- v2에서 chunks를 이어 붙이기 위해 일부 chunk 앞에 인위적인 공백이 들어갔다.
+- 자막 텍스트에는 선행 공백이 있으면 안 된다.
+
+수정 대상:
+- storyboards/graphics-cycloid.storyboard.json
+- assets/graphics-cycloid/graphics-storyboard.md
+
+수정 규칙:
+- 모든 subtitleChunks.text의 앞뒤 공백을 제거해.
+- 청크 자체에는 자연스러운 텍스트만 들어가야 한다.
+- "가장 짧은 길이 아니라"처럼 문법적으로 한 덩어리인 표현은 같은 chunk에 둔다.
+- 검증할 때는 chunks를 " "로 이어 붙이고, 여러 공백을 하나로 정규화한 뒤 narration과 비교해.
+- 중복/누락 금지.
+- Typecast TTS 호출과 영상 렌더링은 하지 않는다.
+
+검증:
+- JSON 파싱
+- 모든 subtitleChunks.text에 선행/후행 공백이 없는지 확인
+- 모든 scene에서 normalize(chunks.join(" ")) === normalize(narration)인지 확인
+- npm run typecheck
+
+마지막 응답에는 고친 내용과 검증 결과만 짧게 정리해줘.

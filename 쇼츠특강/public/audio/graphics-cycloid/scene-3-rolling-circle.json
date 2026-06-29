@@ -1,0 +1,70 @@
+{
+  "sceneId": "scene-3-rolling-circle",
+  "narration": "원을 굴리면 원둘레의 한 점은 아래로 흔들리며 나아갑니다. 그 자취가 바로 사이클로이드입니다.",
+  "audioFormat": "wav",
+  "audioDuration": 7.5,
+  "durationSeconds": 8.1,
+  "words": [
+    {
+      "text": "원을",
+      "start": 0.461,
+      "end": 0.782
+    },
+    {
+      "text": "굴리면",
+      "start": 0.842,
+      "end": 1.283
+    },
+    {
+      "text": "원둘레의",
+      "start": 1.444,
+      "end": 1.985
+    },
+    {
+      "text": "한",
+      "start": 2.045,
+      "end": 2.206
+    },
+    {
+      "text": "점은",
+      "start": 2.266,
+      "end": 2.587
+    },
+    {
+      "text": "아래로",
+      "start": 2.687,
+      "end": 2.988
+    },
+    {
+      "text": "흔들리며",
+      "start": 3.048,
+      "end": 3.59
+    },
+    {
+      "text": "나아갑니다.",
+      "start": 3.65,
+      "end": 4.211
+    },
+    {
+      "text": "그",
+      "start": 5.134,
+      "end": 5.234
+    },
+    {
+      "text": "자취가",
+      "start": 5.334,
+      "end": 5.775
+    },
+    {
+      "text": "바로",
+      "start": 5.856,
+      "end": 6.096
+    },
+    {
+      "text": "사이클로이드입니다.",
+      "start": 6.197,
+      "end": 7.5
+    }
+  ],
+  "characters": null
+}

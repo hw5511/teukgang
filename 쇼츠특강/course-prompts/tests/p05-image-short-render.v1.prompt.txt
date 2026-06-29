@@ -1,0 +1,56 @@
+검수된 이미지형 쇼츠 storyboard와 생성된 이미지 파일을 사용해서 실제 Remotion 쇼츠 영상을 만들어줘.
+
+중요:
+- 현재 폴더 안에서만 작업해줘.
+- API 키를 출력하거나 파일에 하드코딩하지 마.
+- TYPECAST_API_KEY 환경변수는 이미 설정되어 있다고 가정하고, 값은 절대 출력하지 마.
+- 실제 Typecast TTS 호출은 이번 단계에서 해도 된다.
+- 실제 Remotion 렌더링도 이번 단계에서 해도 된다.
+
+입력:
+- storyboard: storyboards/image-dancing-plague.storyboard.json
+- 이미지 폴더: public/images/image-dancing-plague/
+- Typecast voice id: tc_69fc0cff784968297fb45daa
+- Typecast model: ssfm-v30
+
+해야 할 일:
+1. storyboard를 업데이트해줘.
+   - voiceId를 tc_69fc0cff784968297fb45daa 로 설정
+   - language는 Korean TTS에 맞게 설정
+   - 모든 image scene의 image.enabled를 true로 설정
+   - public/images/image-dancing-plague/ 안의 5개 이미지 파일이 실제 존재하는지 확인
+
+2. Typecast TTS를 생성해줘.
+   - scripts/generate-tts.ts를 활용해도 된다.
+   - 출력 위치는 public/audio/image-dancing-plague/
+   - storyboard에 audio.enabled=true와 audio.source가 연결되게 해줘.
+   - 생성 후 각 scene별 metadata JSON도 보존해줘.
+   - TTS 결과의 audioDuration이 storyboard durationSeconds와 많이 다르면, durationSeconds를 audioDuration에 맞춰 업데이트해줘.
+   - 기존 subtitleChunks는 의미 단위를 유지하되, 전체 길이가 바뀌면 각 chunk start/end를 비율로 보정해줘.
+
+3. Remotion composition을 실제 이미지형 쇼츠용으로 개선해줘.
+   - 새 composition id: ImageDancingPlagueShort
+   - 기존 SampleShort는 유지해도 되지만, 새 composition이 렌더 대상이어야 해.
+   - 화면은 1080x1920, 30fps.
+   - 상단 헤더, 하단 푸터, 큰 박스형 카드 UI는 제거해줘.
+   - 이미지는 풀스크린 또는 거의 풀스크린으로 보여줘.
+   - 이미지 위쪽 여백/하늘/건물 부분에 자막이 올라가야 해.
+   - 자막은 scene.caption 전체가 아니라 subtitleChunks를 현재 frame에 맞춰 2~5어절 단위로 보여줘.
+   - 자막은 화면 중앙보다 약간 위쪽 또는 이미지 상단 여백에 배치해줘.
+   - 짧은 fade/scale/pan 애니메이션을 넣어 지루하지 않게 해줘.
+   - 텍스트가 너무 작지 않게 하고, 모바일 숏폼에서 바로 읽히게 해줘.
+   - 둥근 모서리 카드, 좌측 색상띠, 설명용 헤더/푸터 같은 UI는 넣지 마.
+
+4. 렌더링해줘.
+   - 먼저 still 하나를 렌더해서 이미지와 자막이 나오는지 확인
+   - 최종 mp4 출력: out/image-dancing-plague-short.mp4
+
+검증:
+- npm run typecheck
+- storyboard JSON 파싱
+- 이미지 5개 존재 확인
+- 오디오 5개 존재 확인
+- Remotion still 렌더 성공
+- mp4 렌더 성공
+
+마지막 응답에는 만든/수정한 파일, 출력 mp4 경로, 검증 결과만 정리해줘.

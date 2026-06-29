@@ -1,0 +1,8 @@
+수정한 청크 예시:
+- [storyboards/image-dancing-plague.storyboard.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/image-dancing-plague.storyboard.json#L25) `한 여자가 멈추지 못한 채` / `춤을 추기 시작했습니다.`
+- [storyboards/image-dancing-plague.storyboard.json](/C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/image-dancing-plague.storyboard.json#L77) `당국은 무도병이라 부르며 광장을 비웠지만,` / `사람들은 더 깊은 혼란 속으로 들어갔습니다.`
+
+검증 결과:
+- JSON 파싱 OK
+- `npm run typecheck` OK
+- 모든 scene에서 `subtitleChunks`를 이어 붙인 문장이 `narration`과 정확히 일치함

@@ -1,0 +1,16 @@
+**Files**
+- [storyboards/graphics-cycloid.storyboard.json](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/storyboards/graphics-cycloid.storyboard.json)
+- [assets/graphics-cycloid/graphics-storyboard.md](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/assets/graphics-cycloid/graphics-storyboard.md)
+- [package.json](C:/Users/yangh/woohee_dev/codex-shorts-student-test-v2/package.json)
+
+**Run**
+- `npm run caption:review:graphics`
+- 검수 서버가 `storyboards/graphics-cycloid.storyboard.json`를 읽어서 기존 caption review UI로 열립니다.
+
+**Validation**
+- JSON 파싱: 통과
+- `subtitleChunks`를 이어 붙인 문자열과 `narration` 정확 일치: 통과
+- `npm run typecheck`: 통과
+- package.json 스크립트 등록 확인: `caption:review:graphics` 존재 확인
+
+TTS 호출과 렌더링은 하지 않았습니다.
