@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex로 AI 쇼츠 자동화하기</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#1e1b16; --ink-2:#6b6459; --ink-3:#938b7d;
+    --paper:#f6f3ec; --card:#ffffff; --line:#ddd6c8; --line-2:#ece7da;
+    --orange:#c2410c; --orange-soft:#fbede4; --orange-line:#eccdb8;
+    --blue:#1d4ed8; --blue-soft:#e9eefb; --blue-line:#c5d3f4;
+
+    --type-title:60px; --type-subtitle:38px; --type-body:30px;
+    --type-small:25px; --type-eyebrow:24px; --type-prompt:27px;
+    --pad-top:84px; --pad-bottom:74px; --pad-x:96px;
+
+    --font:"Pretendard","Pretendard Variable",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#100f0d;}
+  deck-stage:not(:defined){visibility:hidden;}
+  deck-stage{font-family:var(--font);}
+
+  section.slide{ background:var(--paper); color:var(--ink); --accent:var(--ink); --accent-soft:var(--line-2); --accent-line:var(--line);}
+  section.s-image{ --accent:var(--orange); --accent-soft:var(--orange-soft); --accent-line:var(--orange-line);}
+  section.s-graphic{ --accent:var(--blue); --accent-soft:var(--blue-soft); --accent-line:var(--blue-line);}
+
+  .wrap{height:100%;padding:var(--pad-top) var(--pad-x) var(--pad-bottom);display:flex;flex-direction:column;}
+
+  /* header */
+  .eyebrow{display:flex;align-items:center;gap:14px;font-size:var(--type-eyebrow);font-weight:600;
+    letter-spacing:.04em;color:var(--accent);text-transform:none;}
+  .eyebrow .dot{width:13px;height:13px;background:var(--accent);border-radius:50%;flex:none;}
+  .eyebrow .num{font-variant-numeric:tabular-nums;color:var(--ink-3);font-weight:600;}
+  .title{font-size:var(--type-title);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin:18px 0 0;text-wrap:balance;}
+  .subtitle{font-size:var(--type-subtitle);font-weight:500;color:var(--ink-2);margin:18px 0 0;line-height:1.3;}
+  .head{flex:none;}
+  .body{flex:1;min-height:0;display:flex;}
+
+  /* prompt box */
+  .prompt{background:var(--card);border:1.5px solid var(--accent-line);display:flex;flex-direction:column;min-height:0;}
+  .prompt__bar{display:flex;align-items:center;gap:16px;padding:18px 28px;border-bottom:1.5px solid var(--accent-line);background:var(--accent-soft);}
+  .prompt__tag{font-size:var(--type-small);font-weight:700;color:#fff;background:var(--accent);padding:6px 16px;letter-spacing:.02em;}
+  .prompt__hint{font-size:var(--type-small);color:var(--ink-2);font-weight:500;}
+  .prompt__body{padding:30px 34px;font-size:var(--type-prompt);line-height:1.55;white-space:pre-wrap;color:#2b2720;overflow:auto;}
+  .prompt__body b{color:var(--accent);font-weight:700;}
+
+  /* chips & lists */
+  .pill{display:inline-flex;align-items:center;gap:10px;font-size:var(--type-small);font-weight:600;white-space:nowrap;
+    color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--accent-line);padding:8px 18px;}
+  .note{font-size:var(--type-small);color:var(--ink-2);line-height:1.4;}
+  .strike-note{display:flex;align-items:center;gap:14px;font-size:var(--type-small);font-weight:600;color:var(--ink-2);}
+  .strike-note .x{width:30px;height:30px;flex:none;border:1.5px solid var(--ink-3);color:var(--ink-3);display:grid;place-items:center;font-weight:700;}
+
+  /* table */
+  table.plan{width:100%;border-collapse:collapse;font-size:27px;background:var(--card);}
+  table.plan th{background:var(--accent-soft);color:var(--ink);font-weight:700;text-align:left;
+    padding:18px 20px;border:1px solid var(--accent-line);font-size:26px;}
+  table.plan td{padding:19px 20px;border:1px solid var(--line);vertical-align:top;line-height:1.42;color:#332f27;}
+  table.plan td.sc{font-weight:700;color:var(--accent);text-align:center;font-variant-numeric:tabular-nums;width:92px;}
+  table.plan td.sec{text-align:center;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  table.plan .script{color:var(--ink);font-weight:600;}
+
+  /* flow (vertical) */
+  .flow{display:flex;flex-direction:column;gap:0;}
+  .flow .step{display:flex;align-items:flex-start;gap:18px;padding:11px 0;}
+  .flow .step .k{flex:none;min-width:42px;width:auto;padding:0 9px;height:42px;border:1.5px solid var(--accent-line);color:var(--accent);
+    background:var(--accent-soft);display:grid;place-items:center;font-weight:700;font-size:var(--type-small);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .flow .step .t{font-size:var(--type-body);font-weight:500;line-height:1.32;padding-top:4px;}
+  .flow .step .t b{font-weight:700;}
+  .flow .conn{width:1.5px;height:14px;background:var(--accent-line);margin-left:21px;}
+
+  /* numbered checklist (setup) */
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:20px 56px;}
+  .check{display:flex;gap:22px;align-items:flex-start;padding:6px 0;border-top:1.5px solid var(--line);padding-top:22px;}
+  .check .n{flex:none;width:50px;height:50px;background:var(--ink);color:var(--paper);display:grid;place-items:center;
+    font-weight:700;font-size:var(--type-body);font-variant-numeric:tabular-nums;}
+  .check .c h4{margin:2px 0 6px;font-size:var(--type-body);font-weight:700;}
+  .check .c p{margin:0;font-size:var(--type-small);color:var(--ink-2);line-height:1.35;}
+
+  /* pipeline strip */
+  .pipe{display:flex;align-items:stretch;gap:0;}
+  .pipe .seg{flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 22px 22px 0;}
+  .pipe .seg .idx{font-size:var(--type-small);font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
+  .pipe .seg .lab{font-size:var(--type-body);font-weight:700;line-height:1.22;}
+  .pipe .seg .bar{height:6px;background:var(--line);margin-top:4px;}
+  .pipe .seg.on .bar{background:var(--accent);}
+  .pipe .seg.on .lab{color:var(--accent);}
+
+  /* feedback grid */
+  .fbgrid{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line);}
+  .fbrow{display:flex;align-items:center;gap:26px;padding:22px 0;border-bottom:1.5px solid var(--line);}
+  .fbrow .sym{flex:none;width:300px;font-size:var(--type-body);font-weight:700;display:flex;align-items:center;gap:14px;}
+  .fbrow .sym .ic{width:14px;height:14px;background:var(--ink);flex:none;}
+  .fbrow .arr{color:var(--ink-3);font-size:var(--type-body);font-weight:700;flex:none;}
+  .fbrow .say{font-size:var(--type-body);color:#2b2720;}
+  .fbrow .say b{color:var(--orange);font-weight:700;}
+
+  /* principle cards */
+  .prin{display:flex;gap:26px;}
+  .prin .p{flex:1;border:1.5px solid var(--ln,var(--line));padding:30px 32px;background:var(--card);}
+  .prin .p.img{--ln:var(--orange-line);}
+  .prin .p.gra{--ln:var(--blue-line);}
+  .prin .p .tag{font-size:var(--type-small);font-weight:700;color:var(--c);}
+  .prin .p.img .tag{--c:var(--orange);}
+  .prin .p.gra .tag{--c:var(--blue);}
+  .prin .p h3{margin:12px 0 0;font-size:34px;font-weight:700;line-height:1.18;}
+
+  .kicker{font-size:var(--type-eyebrow);font-weight:600;color:var(--ink-2);letter-spacing:.02em;}
+
+  /* title slide */
+  .cover{display:flex;flex-direction:column;height:100%;}
+  .cover .top{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .cover h1{font-size:104px;font-weight:800;line-height:1.04;letter-spacing:-.03em;margin:22px 0 0;}
+  .cover h1 .hl{color:var(--orange);}
+  .cover .lede{font-size:42px;font-weight:500;color:var(--ink-2);margin:26px 0 0;line-height:1.32;}
+  .cover .tags{display:flex;gap:14px;margin-top:30px;}
+  .cover .tags span{font-size:var(--type-small);font-weight:600;color:var(--ink-2);border:1.5px solid var(--line);padding:8px 18px;white-space:nowrap;}
+
+  /* cover content is always visible (no entrance animation, robust for print/PDF) */
+  .cover .anim{opacity:1;transform:none;}
+
+  /* 슬라이드 목록(레일) 접기/펼치기 토글 */
+  .rail-toggle{position:fixed;top:14px;left:14px;z-index:9999;width:42px;height:38px;padding:0;
+    display:flex;align-items:center;justify-content:center;background:rgba(20,20,20,.82);color:#fff;
+    border:1px solid rgba(255,255,255,.2);border-radius:9px;cursor:pointer;
+    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+    transition:background .15s ease, left .2s cubic-bezier(.3,.7,.4,1);}
+  .rail-toggle:hover{background:rgba(44,44,44,.92);}
+  .rail-toggle .ic{position:relative;width:19px;height:15px;border:2px solid #fff;border-radius:3px;box-sizing:border-box;}
+  .rail-toggle .ic::before{content:"";position:absolute;top:1px;bottom:1px;left:5px;width:2px;background:#fff;border-radius:1px;}
+  .rail-toggle .ic::after{content:"";position:absolute;top:1px;bottom:1px;left:1px;width:3px;background:#fff;border-radius:1px;transition:opacity .2s ease;}
+  body.rail-collapsed .rail-toggle .ic::after{opacity:0;}
+  @media (max-width:640px){.rail-toggle{display:none;}}
+  @media print{.rail-toggle{display:none;}}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+  <!-- 01 · COVER -->
+  <section class="slide" data-label="제목">
+    <div class="wrap">
+      <div class="cover">
+        <div class="top">
+          <div class="kicker anim">1시간 실전 특강 · 초보자 환영</div>
+          <h1 class="anim d1">Codex로<br><span class="hl">AI 쇼츠</span> 자동화하기</h1>
+          <p class="lede anim d2">주제 하나를 쇼츠 제작 파이프라인으로.<br>코딩이 아니라, 프롬프트로 만듭니다.</p>
+          <div class="tags anim d2">
+            <span>이미지 생성형 쇼츠</span>
+            <span>Remotion 그래픽형 쇼츠</span>
+          </div>
+        </div>
+        <div class="pipe">
+          <div class="seg"><span class="idx">01</span><span class="lab">세팅</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">02</span><span class="lab">자료조사 &amp; 기획</span><span class="bar"></span></div>
+          <div class="seg on"><span class="idx">03</span><span class="lab">웹 UI 검수</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">04</span><span class="lab">생성</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">05</span><span class="lab">렌더</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">06</span><span class="lab">피드백</span><span class="bar"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · TYPECAST API KEY (먼저 발급) -->
+  <section class="slide s-image" data-label="API 키 발급">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 시작 전 준비 · <span class="num">먼저 해두기</span></div>
+        <h2 class="title">Typecast API 키, 지금 발급해 두세요</h2>
+        <p class="subtitle">발급·승인에 시간이 걸릴 수 있어, 세팅을 시작하기 전에 미리 받아둡니다.</p>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:30px;">
+        <div class="checks">
+          <div class="check"><div class="n">1</div><div class="c"><h4>Typecast 가입 · 로그인</h4><p>typecast.ai 접속해 계정 만들기</p></div></div>
+          <div class="check"><div class="n">2</div><div class="c"><h4>API 메뉴 진입</h4><p>설정에서 개발자 · API 키 페이지 열기</p></div></div>
+          <div class="check"><div class="n">3</div><div class="c"><h4>API 키 발급</h4><p>새 키 생성 후 한 번만 보이는 값 즉시 복사</p></div></div>
+          <div class="check"><div class="n">4</div><div class="c"><h4>안전한 곳에 보관</h4><p>메모장 등에 붙여두기 — 세팅 때 환경변수로 등록</p></div></div>
+        </div>
+        <div class="pill" style="align-self:flex-start;">키는 발급 직후 한 번만 표시됩니다. 잃어버리면 새로 발급해야 하니 꼭 복사해 두세요.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · SETUP CHECKLIST -->
+  <section class="slide" data-label="세팅 준비">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 실습 준비 · <span class="num">STEP 0</span></div>
+        <h2 class="title">작업환경 세팅</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:34px;">
+        <div class="checks">
+          <div class="check"><div class="n">1</div><div class="c"><h4>Codex 설치</h4><p>터미널에서 바로 대화하며 작업하는 환경</p></div></div>
+          <div class="check"><div class="n">2</div><div class="c"><h4>작업 폴더 만들기</h4><p>쇼츠 프로젝트를 한곳에 담을 폴더</p></div></div>
+          <div class="check"><div class="n">3</div><div class="c"><h4>전체 권한으로 변경</h4><p>파일 생성·실행이 막히지 않도록</p></div></div>
+          <div class="check"><div class="n">4</div><div class="c"><h4>Typecast API 키 저장</h4><p>환경변수로 TTS 음성 생성 연결</p></div></div>
+          <div class="check"><div class="n">5</div><div class="c"><h4>Remotion 설치</h4><p>영상 합성·렌더링 엔진</p></div></div>
+          <div class="check"><div class="n">6</div><div class="c"><h4>제작 구조 만들기</h4><p>이미지형·그래픽형 작업 스킬과 폴더</p></div></div>
+        </div>
+        <div class="pill" style="align-self:flex-start;">이 6가지는 다음 프롬프트 하나로 끝납니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · SETUP PROMPT -->
+  <section class="slide" data-label="세팅 프롬프트">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 세팅</div>
+        <h2 class="title">세팅 프롬프트</h2>
+      </div>
+      <div class="body" style="margin-top:30px;align-items:center;">
+        <div class="prompt" style="width:100%;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">그대로 붙여넣으세요</span></div>
+          <div class="prompt__body" style="font-size:25px;">Codex에서 AI 쇼츠 제작용 작업환경을 세팅해줘.
+
+작업 폴더를 하나 만들고, Remotion을 설치해줘.
+
+Typecast API 키를 환경변수로 연결할 수 있게 구성해줘.
+이후 씬 단위로 TTS 음성을 생성할 수 있게 스크립트를 준비해줘.
+
+그리고 앞으로 쇼츠를 만들 때 사용할 수 있도록
+이미지 생성형 쇼츠와 Remotion 그래픽형 쇼츠를 모두 처리할 수 있는 구조를 만들어줘.
+
+이미지 생성형은 이미지, TTS, 자막, 전환효과, 효과음을 병합하는 방식이고,
+그래픽형은 숫자, 선, 도형, 그래프 같은 시각요소를 Remotion으로 애니메이션화하는 방식이야.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · IMAGE · PLAN TABLE -->
+  <section class="slide s-image" data-label="이미지형 기획">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 이미지 생성형 · <span class="num">STEP 1</span></div>
+        <h2 class="title">표로 기획하기</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:24px;">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+          <span class="pill">적합 · 역사 · 야사 · 인물 · 사건 재현</span>
+          <span class="note">주제 조사 → 흥미로운 사실 선정 → 60초 대본 초안 → 표로 정리</span>
+        </div>
+        <table class="plan">
+          <thead><tr><th style="width:92px;">장면</th><th style="width:24%;">장면묘사</th><th>실제 대본문장</th><th style="width:104px;">시간(초)</th><th style="width:26%;">이미지 생성 프롬프트</th></tr></thead>
+          <tbody>
+            <tr><td class="sc">01</td><td>황혼빛 콜로세움 전경, 먼지바람</td><td class="script">“2천 년 전, 5만 명이 이곳에 모였습니다.”</td><td class="sec">0–4</td><td>황혼의 콜로세움 와이드샷, 영화적 조명, 흩날리는 먼지</td></tr>
+            <tr><td class="sc">02</td><td>검투사가 모래밭에 선 클로즈업</td><td class="script">“하지만 검투사 모두가 죽은 건 아니었죠.”</td><td class="sec">4–8</td><td>검투사 클로즈업, 모래 경기장, 긴장된 표정, 측광</td></tr>
+            <tr><td class="sc">03</td><td>관중석에서 엄지 제스처</td><td class="script">“관중의 손짓 하나가 생사를 갈랐습니다.”</td><td class="sec">8–12</td><td>로마 관중 엄지손가락 군중, 극적 구도, 함성</td></tr>
+          </tbody>
+        </table>
+        <div class="strike-note"><span class="x">✕</span> 아직 이미지 생성·렌더링은 하지 않습니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · IMAGE · PLAN PROMPT -->
+  <section class="slide s-image" data-label="이미지형 기획 프롬프트">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 이미지 생성형 · 기획</div>
+        <h2 class="title">기획 프롬프트</h2>
+      </div>
+      <div class="body" style="margin-top:28px;align-items:center;">
+        <div class="prompt" style="width:100%;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">승인 전엔 생성하지 않게</span></div>
+          <div class="prompt__body">역사의 흥미로운 사실이나 야사 중에서 쇼츠로 만들기 좋은 주제를 조사해서 하나 골라줘.
+
+<b>아직 이미지 생성이나 영상 렌더링은 하지 말고,</b> 먼저 기획안만 표로 정리해줘.
+
+표에는 다음 열을 넣어줘.
+ · 장면번호  · 장면묘사  · 실제 대본문장  · 예상 시간초  · 이미지 생성 프롬프트
+
+장면묘사는 이미지로 만들 수 있을 만큼 구체적으로 써줘.
+대본문장은 실제 TTS로 읽을 문장 기준으로 자연스럽게 써줘.
+
+<b>내가 승인하면 그다음 단계로 넘어갈게.</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · WEB UI REVIEW -->
+  <section class="slide s-image" data-label="웹 UI 검수">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 기획과 생성 <b style="color:var(--accent);">사이</b> · 검수</div>
+        <h2 class="title">웹 UI로 대본 검수</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 44%;display:flex;flex-direction:column;gap:18px;">
+          <div style="border:1.5px solid var(--line);background:var(--card);">
+            <div style="display:flex;align-items:center;gap:9px;padding:14px 18px;border-bottom:1.5px solid var(--line-2);">
+              <span style="width:14px;height:14px;border-radius:50%;background:#e0796a;"></span>
+              <span style="width:14px;height:14px;border-radius:50%;background:#e7c25c;"></span>
+              <span style="width:14px;height:14px;border-radius:50%;background:#8ab87a;"></span>
+              <span style="margin-left:10px;font-size:24px;color:var(--ink-2);font-weight:600;">대본 검수 · scene 02</span>
+            </div>
+            <div style="padding:20px 20px 22px;display:flex;flex-direction:column;gap:12px;">
+              <div style="font-size:24px;color:var(--ink-2);">장면묘사 · 대본문장 · <b style="color:var(--orange);">자막 청크</b> · 시간 · 그래픽 설명</div>
+              <div style="border:1.5px solid var(--line);padding:12px 14px;font-size:24px;">복리는 / 시간이 갈수록 / 가팔라집니다</div>
+              <div style="border:1.5px solid var(--line);padding:12px 14px;font-size:24px;color:var(--ink-2);">5.0초 — 자동 길이 맞춤</div>
+              <div style="display:flex;gap:12px;margin-top:4px;">
+                <span style="font-size:24px;font-weight:700;color:#fff;background:var(--ink);padding:11px 22px;white-space:nowrap;">저장</span>
+                <span style="font-size:24px;font-weight:700;color:var(--orange);border:1.5px solid var(--orange-line);background:var(--orange-soft);padding:11px 22px;white-space:nowrap;">렌더</span>
+              </div>
+            </div>
+          </div>
+          <div class="note"><b style="color:var(--ink);">저장</b>하면 수정 내용이 JSON에 반영되고, <b style="color:var(--ink);">렌더</b>를 누르면 그 JSON으로 영상을 다시 만듭니다.</div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">검수 사이트 만들기</span></div>
+          <div class="prompt__body" style="font-size:24px;line-height:1.7;padding:34px 38px;">방금 만든 스토리보드를 JSON으로 저장하고, 웹 UI 형태의 대본 검수 사이트를 만들어줘.
+
+웹 UI에서는 씬별로 다음을 수정할 수 있게 해줘.
+ · 장면묘사  · 실제 대본문장  · 자막 청크  · 예상 시간  · 이미지 프롬프트 또는 그래픽 설명
+
+자막 청크는 TTS 읽는 속도에 맞게 <b>3~4단어 단위</b>로 나눌 수 있게 해줘.
+저장 버튼을 누르면 수정 내용이 JSON에 반영되게 하고,
+렌더 버튼을 누르면 저장된 JSON 기준으로 다시 렌더링할 수 있게 해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · IMAGE · GENERATE PROMPT -->
+  <section class="slide s-image" data-label="이미지형 생성">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 이미지 생성형 · <span class="num">STEP 2</span></div>
+        <h2 class="title">이미지 영상 생성</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">JSON</div><div class="t">웹 UI에서 저장한 <b>JSON</b>을 기준으로</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">1</div><div class="t">씬별 <b>이미지 생성</b> · 스타일 통일</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">씬별 <b>Typecast TTS</b> · 음성 길이로 duration 조정</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t">자막 청크 · 전환효과 · 효과음 <b>Remotion 병합</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">4</div><div class="t">세로 쇼츠 <b>mp4 렌더링</b></div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">복사해서 입력</span></div>
+          <div class="prompt__body" style="font-size:26px;">웹 UI에서 저장한 JSON을 기준으로 이미지 생성형 쇼츠를 만들어줘.
+
+각 씬마다 이미지 프롬프트에 맞는 이미지를 생성하고, 스타일은 전체 영상에서 통일감 있게 유지해줘.
+
+각 씬의 실제 대본문장을 Typecast로 TTS 생성하고, 생성된 음성 길이에 맞춰 씬 duration을 조정해줘.
+
+이미지, 씬별 음성, 자막 청크, 전환효과, 효과음을 Remotion으로 자연스럽게 병합해줘.
+최종 결과는 세로 쇼츠 mp4로 렌더링해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · GRAPHIC · PLAN TABLE -->
+  <section class="slide s-graphic" data-label="그래픽형 기획">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> Remotion 그래픽형 · <span class="num">STEP 1</span></div>
+        <h2 class="title">움직임까지 기획하기</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:24px;">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+          <span class="pill">적합 · 수학 · 과학 · 경제 · 데이터 · 개념 설명</span>
+          <span class="note">장면묘사 = 숫자·선·도형·그래프·게이지가 <b style="color:var(--blue);">어떤 순서로 움직이는지</b> 구체적으로</span>
+        </div>
+        <table class="plan">
+          <thead><tr><th style="width:92px;">장면</th><th style="width:42%;">장면묘사 (무엇이 어떻게 움직이는가)</th><th>실제 대본문장</th><th style="width:104px;">시간(초)</th></tr></thead>
+          <tbody>
+            <tr><td class="sc">01</td><td>화면 중앙 “0원” 숫자가 떠오르고, 아래 가로축이 그려짐</td><td class="script">“월급만 모아선 부자가 되기 어렵습니다.”</td><td class="sec">0–4</td></tr>
+            <tr><td class="sc">02</td><td>막대가 왼→오로 차오르다 곡선으로 바뀌며 가팔라짐</td><td class="script">“복리는 시간이 갈수록 가팔라집니다.”</td><td class="sec">4–9</td></tr>
+            <tr><td class="sc">03</td><td>“72 ÷ 이자율” 식이 게이지로 변하며 숫자가 채워짐</td><td class="script">“72를 이자율로 나누면, 두 배 되는 해입니다.”</td><td class="sec">9–14</td></tr>
+          </tbody>
+        </table>
+        <div class="strike-note"><span class="x">✕</span> 아직 Remotion 제작·렌더링은 하지 않습니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · GRAPHIC · PLAN PROMPT -->
+  <section class="slide s-graphic" data-label="그래픽형 기획 프롬프트">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> Remotion 그래픽형 · 기획</div>
+        <h2 class="title">기획 프롬프트</h2>
+      </div>
+      <div class="body" style="margin-top:28px;align-items:center;">
+        <div class="prompt" style="width:100%;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">장면묘사를 ‘움직임’으로</span></div>
+          <div class="prompt__body">수학, 과학, 경제, 데이터 중에서 쇼츠로 만들기 좋은 흥미로운 지식 하나를 조사해서 골라줘.
+
+<b>아직 Remotion 제작이나 렌더링은 하지 말고,</b> 먼저 기획안만 표로 정리해줘.
+
+표에는 다음 열을 넣어줘.
+ · 장면번호  · 장면묘사  · 실제 대본문장  · 예상 시간초
+
+장면묘사는 하나마나 한 설명이 아니라, <b>화면 중앙에 어떤 숫자·선·도형·그래프·게이지가 등장하고 어떤 순서로 움직이는지</b> 구체적으로 써줘.
+대본문장은 실제 TTS로 읽을 문장 기준으로 자연스럽게 써줘.
+
+<b>내가 승인하면 그다음 단계로 넘어갈게.</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · GRAPHIC · GENERATE PROMPT -->
+  <section class="slide s-graphic" data-label="그래픽형 생성">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> Remotion 그래픽형 · <span class="num">STEP 2</span></div>
+        <h2 class="title">씬별 그래픽 생성</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">JSON</div><div class="t">저장된 <b>JSON</b> 기준으로 시작</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">1</div><div class="t">씬마다 <b>Remotion 파일 분리</b> · 모듈식</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">숫자·선·도형·그래프·게이지 <b>애니메이션</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t">씬별 <b>Typecast TTS</b> · 음성 길이로 duration 조정</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">4</div><div class="t">자막 청크는 <b>시각요소 아래 크게</b> · 세로 mp4</div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">복사해서 입력</span></div>
+          <div class="prompt__body" style="font-size:24px;">웹 UI에서 저장한 JSON을 기준으로 Remotion 그래픽형 쇼츠를 만들어줘.
+
+씬마다 파일을 나누어 모듈식으로 작성하고, 각 씬은 JSON의 장면묘사를 기준으로 숫자·선·도형·그래프·게이지·자막으로 구성해줘.
+
+각 씬의 실제 대본문장을 Typecast로 TTS 생성하고, 생성된 음성 길이에 맞춰 씬 duration을 조정해줘.
+
+자막은 저장된 자막 청크를 사용하고, 화면 중앙 시각요소 아래에 쇼츠 자막처럼 크게 배치해줘.
+
+상단 헤더나 하단 푸터는 넣지 말고, 메인 시각요소와 자막 중심으로 구성해줘.
+최종 결과는 세로 쇼츠 mp4로 렌더링해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · FEEDBACK -->
+  <section class="slide" data-label="피드백 방법">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 결과물 다듬기</div>
+        <h2 class="title">피드백으로 다듬기</h2>
+      </div>
+      <div class="body" style="gap:48px;margin-top:24px;align-items:stretch;">
+        <div style="flex:0 0 50%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="fbgrid">
+            <div class="fbrow"><div class="sym"><span class="ic"></span>진행속도가 느리다</div><span class="arr">→</span><div class="say"><b>“템포를 더 빠르게”</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>시각요소가 작다</div><span class="arr">→</span><div class="say"><b>“모바일에서 더 크게”</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>자막이 어색하게 나뉜다</div><span class="arr">→</span><div class="say"><b>“자막 다시 나눠줘”</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>엔딩이 약하다</div><span class="arr">→</span><div class="say"><b>“마무리 짧고 선명하게”</b></div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;--accent:var(--orange);--accent-soft:var(--orange-soft);--accent-line:var(--orange-line);">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">증상을 그대로 말하면 됩니다</span></div>
+          <div class="prompt__body" style="font-size:31px;line-height:1.65;padding:36px 40px;">진행속도가 너무 느려. 쇼츠는 지루하지 않게 빠른 진행속도가 중요하니까 전체 템포를 더 빠르게 조정해줘.
+
+시각요소와 자막도 모바일에서 더 크게 보이게 키워줘.
+자막은 어색하게 끊기지 않게 다시 나눠줘.
+마무리 대본도 더 짧고 선명하게 다듬어줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · CLOSING -->
+  <section class="slide" data-label="마무리 공식">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 오늘 가져갈 것</div>
+        <h2 class="title">오늘의 제작 공식</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:42px;margin-top:8px;">
+        <div class="pipe">
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">01</span><span class="lab">세팅</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">02</span><span class="lab">자료조사 &amp; 기획</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">03</span><span class="lab">웹 UI 검수</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">04</span><span class="lab">생성</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">05</span><span class="lab">렌더</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">06</span><span class="lab">피드백</span><span class="bar"></span></div>
+        </div>
+        <div class="prin">
+          <div class="p img"><div class="tag">이미지 생성형</div><h3>장면을 그림처럼</h3></div>
+          <div class="p gra"><div class="tag">Remotion 그래픽형</div><h3>개념을 움직이게</h3></div>
+        </div>
+        <p class="subtitle" style="margin:0;font-weight:600;color:var(--ink);">핵심은 코딩이 아니라, <span style="color:var(--orange);">제작 흐름을 프롬프트로 통제</span>하는 것입니다.</p>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+<button id="railToggle" class="rail-toggle" type="button" aria-label="슬라이드 목록 접기/펼치기" aria-expanded="true"><span class="ic" aria-hidden="true"></span></button>
+<script src="deck-stage.js"></script>
+<script>
+(function(){
+  var btn = document.getElementById('railToggle');
+  if(!btn) return;
+  var visible = true;
+  try { if (localStorage.getItem('deck-stage.railVisible') === '0') visible = false; } catch(e){}
+  function apply(){
+    document.body.classList.toggle('rail-collapsed', !visible);
+    btn.setAttribute('aria-expanded', visible ? 'true' : 'false');
+  }
+  apply();
+  btn.addEventListener('click', function(){
+    visible = !visible;
+    try { window.postMessage({ type:'__deck_rail_visible', on: visible }, '*'); } catch(e){}
+    apply();
+  });
+})();
+</script>
+</body>
+</html>
