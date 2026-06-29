@@ -41,6 +41,7 @@ jobs:
           cp -R webgame-workshop-pages/. _site/webgame-workshop-pages/
           mkdir -p _site/shorts-workshop
           cp -R shorts-workshop/. _site/shorts-workshop/
+          rm -f _site/shorts-workshop/standalone.html
           touch _site/.nojekyll
 
       - name: Upload artifact
