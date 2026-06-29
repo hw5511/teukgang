@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - pages-root/**
       - webgame-workshop-pages/**
       - shorts-workshop/**
       - .github/workflows/webgame-pages.yml
@@ -35,7 +36,9 @@ jobs:
       - name: Prepare Pages site
         run: |
           mkdir -p _site
-          cp -R webgame-workshop-pages/. _site/
+          cp -R pages-root/. _site/
+          mkdir -p _site/webgame-workshop-pages
+          cp -R webgame-workshop-pages/. _site/webgame-workshop-pages/
           mkdir -p _site/shorts-workshop
           cp -R shorts-workshop/. _site/shorts-workshop/
           touch _site/.nojekyll
