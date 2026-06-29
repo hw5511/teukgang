@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex로 나만의 웹 게임 만들기</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#1e1b16; --ink-2:#6b6459; --ink-3:#938b7d;
+    --paper:#f6f3ec; --card:#ffffff; --line:#ddd6c8; --line-2:#ece7da;
+    --orange:#c2410c; --orange-soft:#fbede4; --orange-line:#eccdb8;
+    --blue:#1d4ed8; --blue-soft:#e9eefb; --blue-line:#c5d3f4;
+
+    --type-title:60px; --type-subtitle:38px; --type-body:30px;
+    --type-small:25px; --type-eyebrow:24px; --type-prompt:27px;
+    --pad-top:84px; --pad-bottom:74px; --pad-x:96px;
+
+    --font:"Pretendard","Pretendard Variable",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#100f0d;}
+  deck-stage:not(:defined){visibility:hidden;}
+  deck-stage{font-family:var(--font);}
+
+  section.slide{ background:var(--paper); color:var(--ink); --accent:var(--ink); --accent-soft:var(--line-2); --accent-line:var(--line);}
+  section.s-image{ --accent:var(--orange); --accent-soft:var(--orange-soft); --accent-line:var(--orange-line);}
+  section.s-graphic{ --accent:var(--blue); --accent-soft:var(--blue-soft); --accent-line:var(--blue-line);}
+
+  .wrap{height:100%;padding:var(--pad-top) var(--pad-x) var(--pad-bottom);display:flex;flex-direction:column;}
+
+  /* header */
+  .eyebrow{display:flex;align-items:center;gap:14px;font-size:var(--type-eyebrow);font-weight:600;
+    letter-spacing:.04em;color:var(--accent);text-transform:none;}
+  .eyebrow .dot{width:13px;height:13px;background:var(--accent);border-radius:50%;flex:none;}
+  .eyebrow .num{font-variant-numeric:tabular-nums;color:var(--ink-3);font-weight:600;}
+  .title{font-size:var(--type-title);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin:18px 0 0;text-wrap:balance;}
+  .subtitle{font-size:var(--type-subtitle);font-weight:500;color:var(--ink-2);margin:18px 0 0;line-height:1.3;}
+  .head{flex:none;}
+  .body{flex:1;min-height:0;display:flex;}
+
+  /* prompt box */
+  .prompt{background:var(--card);border:1.5px solid var(--accent-line);display:flex;flex-direction:column;min-height:0;}
+  .prompt__bar{display:flex;align-items:center;gap:16px;padding:18px 28px;border-bottom:1.5px solid var(--accent-line);background:var(--accent-soft);}
+  .prompt__tag{font-size:var(--type-small);font-weight:700;color:#fff;background:var(--accent);padding:6px 16px;letter-spacing:.02em;}
+  .prompt__hint{font-size:var(--type-small);color:var(--ink-2);font-weight:500;}
+  .prompt__body{padding:30px 34px;font-size:var(--type-prompt);line-height:1.55;white-space:pre-wrap;color:#2b2720;overflow:auto;}
+  .prompt__body b{color:var(--accent);font-weight:700;}
+
+  /* chips & lists */
+  .pill{display:inline-flex;align-items:center;gap:10px;font-size:var(--type-small);font-weight:600;white-space:nowrap;
+    color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--accent-line);padding:8px 18px;}
+  .note{font-size:var(--type-small);color:var(--ink-2);line-height:1.4;}
+  .strike-note{display:flex;align-items:center;gap:14px;font-size:var(--type-small);font-weight:600;color:var(--ink-2);}
+  .strike-note .x{width:30px;height:30px;flex:none;border:1.5px solid var(--ink-3);color:var(--ink-3);display:grid;place-items:center;font-weight:700;}
+
+  /* table */
+  table.plan{width:100%;border-collapse:collapse;font-size:var(--type-small);background:var(--card);}
+  table.plan th{background:var(--accent-soft);color:var(--ink);font-weight:700;text-align:left;
+    padding:16px 18px;border:1px solid var(--accent-line);font-size:var(--type-small);}
+  table.plan td{padding:15px 18px;border:1px solid var(--line);vertical-align:top;line-height:1.38;color:#332f27;}
+  table.plan td.sc{font-weight:700;color:var(--accent);text-align:center;font-variant-numeric:tabular-nums;width:78px;}
+  table.plan td.sec{text-align:center;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  table.plan .script{color:var(--ink);font-weight:600;}
+
+  /* flow (vertical) */
+  .flow{display:flex;flex-direction:column;gap:0;}
+  .flow .step{display:flex;align-items:flex-start;gap:18px;padding:11px 0;}
+  .flow .step .k{flex:none;min-width:42px;width:auto;padding:0 9px;height:42px;border:1.5px solid var(--accent-line);color:var(--accent);
+    background:var(--accent-soft);display:grid;place-items:center;font-weight:700;font-size:var(--type-small);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .flow .step .t{font-size:var(--type-body);font-weight:500;line-height:1.32;padding-top:4px;}
+  .flow .step .t b{font-weight:700;}
+  .flow .conn{width:1.5px;height:14px;background:var(--accent-line);margin-left:21px;}
+
+  /* numbered checklist (setup) */
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:20px 56px;}
+  .check{display:flex;gap:22px;align-items:flex-start;padding:6px 0;border-top:1.5px solid var(--line);padding-top:22px;}
+  .check .n{flex:none;width:50px;height:50px;background:var(--ink);color:var(--paper);display:grid;place-items:center;
+    font-weight:700;font-size:var(--type-body);font-variant-numeric:tabular-nums;}
+  .check .c h4{margin:2px 0 6px;font-size:var(--type-body);font-weight:700;}
+  .check .c p{margin:0;font-size:var(--type-small);color:var(--ink-2);line-height:1.35;}
+
+  /* pipeline strip */
+  .pipe{display:flex;align-items:stretch;gap:0;}
+  .pipe .seg{flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 22px 22px 0;}
+  .pipe .seg .idx{font-size:var(--type-small);font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
+  .pipe .seg .lab{font-size:var(--type-body);font-weight:700;line-height:1.22;}
+  .pipe .seg .bar{height:6px;background:var(--line);margin-top:4px;}
+  .pipe .seg.on .bar{background:var(--accent);}
+  .pipe .seg.on .lab{color:var(--accent);}
+
+  /* feedback grid */
+  .fbgrid{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line);}
+  .fbrow{display:flex;align-items:center;gap:26px;padding:22px 0;border-bottom:1.5px solid var(--line);}
+  .fbrow .sym{flex:none;width:300px;font-size:var(--type-body);font-weight:700;display:flex;align-items:center;gap:14px;}
+  .fbrow .sym .ic{width:14px;height:14px;background:var(--ink);flex:none;}
+  .fbrow .arr{color:var(--ink-3);font-size:var(--type-body);font-weight:700;flex:none;}
+  .fbrow .say{font-size:var(--type-body);color:#2b2720;}
+  .fbrow .say b{color:var(--orange);font-weight:700;}
+
+  /* principle cards */
+  .prin{display:flex;gap:26px;}
+  .prin .p{flex:1;border:1.5px solid var(--ln,var(--line));padding:30px 32px;background:var(--card);}
+  .prin .p.img{--ln:var(--orange-line);}
+  .prin .p.gra{--ln:var(--blue-line);}
+  .prin .p .tag{font-size:var(--type-small);font-weight:700;color:var(--c);}
+  .prin .p.img .tag{--c:var(--orange);}
+  .prin .p.gra .tag{--c:var(--blue);}
+  .prin .p h3{margin:12px 0 0;font-size:34px;font-weight:700;line-height:1.18;}
+
+  .kicker{font-size:var(--type-eyebrow);font-weight:600;color:var(--ink-2);letter-spacing:.02em;}
+
+  /* title slide */
+  .cover{display:flex;flex-direction:column;height:100%;}
+  .cover .top{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .cover h1{font-size:104px;font-weight:800;line-height:1.04;letter-spacing:-.03em;margin:22px 0 0;}
+  .cover h1 .hl{color:var(--orange);}
+  .cover .lede{font-size:42px;font-weight:500;color:var(--ink-2);margin:26px 0 0;line-height:1.32;}
+  .cover .tags{display:flex;gap:14px;margin-top:30px;}
+  .cover .tags span{font-size:var(--type-small);font-weight:600;color:var(--ink-2);border:1.5px solid var(--line);padding:8px 18px;white-space:nowrap;}
+
+  /* cover content is always visible (no entrance animation, robust for print/PDF) */
+  .cover .anim{opacity:1;transform:none;}
+
+  /* 슬라이드 목록(레일) 접기/펼치기 토글 */
+  .rail-toggle{position:fixed;top:14px;left:14px;z-index:9999;width:42px;height:38px;padding:0;
+    display:flex;align-items:center;justify-content:center;background:rgba(20,20,20,.82);color:#fff;
+    border:1px solid rgba(255,255,255,.2);border-radius:9px;cursor:pointer;
+    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+    transition:background .15s ease, left .2s cubic-bezier(.3,.7,.4,1);}
+  .rail-toggle:hover{background:rgba(44,44,44,.92);}
+  .rail-toggle .ic{position:relative;width:19px;height:15px;border:2px solid #fff;border-radius:3px;box-sizing:border-box;}
+  .rail-toggle .ic::before{content:"";position:absolute;top:1px;bottom:1px;left:5px;width:2px;background:#fff;border-radius:1px;}
+  .rail-toggle .ic::after{content:"";position:absolute;top:1px;bottom:1px;left:1px;width:3px;background:#fff;border-radius:1px;transition:opacity .2s ease;}
+  body.rail-collapsed .rail-toggle .ic::after{opacity:0;}
+  @media (max-width:640px){.rail-toggle{display:none;}}
+  @media print{.rail-toggle{display:none;}}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+  <!-- 01 · COVER -->
+  <section class="slide" data-label="제목">
+    <div class="wrap">
+      <div class="cover">
+        <div class="top">
+          <div class="kicker anim">1시간 실전 특강 · 코딩 초보자 환영</div>
+          <h1 class="anim d1">Codex로<br>나만의 <span class="hl">웹 게임</span> 만들기</h1>
+          <p class="lede anim d2">AI와 대화하며 브라우저 게임을 만들고,<br>공유 가능한 URL까지 완성합니다.</p>
+          <div class="tags anim d2">
+            <span>2D 웹게임</span>
+            <span>AI 생성 에셋</span>
+            <span>모바일 터치 UI</span>
+            <span>공유 URL</span>
+          </div>
+        </div>
+        <div class="pipe">
+          <div class="seg"><span class="idx">01</span><span class="lab">아이디어</span><span class="bar"></span></div>
+          <div class="seg on"><span class="idx">02</span><span class="lab">첫 게임</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">03</span><span class="lab">테스트</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">04</span><span class="lab">에셋</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">05</span><span class="lab">모바일</span><span class="bar"></span></div>
+          <div class="seg"><span class="idx">06</span><span class="lab">배포</span><span class="bar"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · GOALS CHECKLIST -->
+  <section class="slide" data-label="오늘 만들 것">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 오늘 만들 것 · <span class="num">목표</span></div>
+        <h2 class="title">완벽한 게임보다, 작동하고 공유되는 결과물</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:34px;">
+        <div class="checks">
+          <div class="check"><div class="n">1</div><div class="c"><h4>첫 게임 만들기</h4><p>자연어로 원하는 게임을 설명하면 코드 생성</p></div></div>
+          <div class="check"><div class="n">2</div><div class="c"><h4>로컬 테스트</h4><p>localhost 주소에서 바로 플레이</p></div></div>
+          <div class="check"><div class="n">3</div><div class="c"><h4>이미지 에셋 적용</h4><p>캐릭터·적·아이템을 PNG로 교체</p></div></div>
+          <div class="check"><div class="n">4</div><div class="c"><h4>완성도 높이기</h4><p>점수·체력·게임오버·클리어 화면</p></div></div>
+          <div class="check"><div class="n">5</div><div class="c"><h4>모바일 대응</h4><p>터치 버튼과 반응형 화면 추가</p></div></div>
+          <div class="check"><div class="n">6</div><div class="c"><h4>웹 배포</h4><p>Cloudflare Pages로 pages.dev URL 생성</p></div></div>
+        </div>
+        <div class="pill" style="align-self:flex-start;">결과물 · HTML/CSS/JS 기반, 브라우저에서 실행되는 2D 웹게임</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · STAGE TABLE ① 1~6 (orange) -->
+  <section class="slide s-image" data-label="제작 단계 ①">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 만들기 · <span class="num">STEP 1–6</span></div>
+        <h2 class="title">제작 단계 ① — 준비부터 에셋까지</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:22px;">
+        <table class="plan">
+          <thead><tr><th style="width:64px;">순서</th><th style="width:18%;">단계</th><th style="width:26%;">진행 내용</th><th>수강생이 하는 일</th><th style="width:30%;">Codex에게 요청</th></tr></thead>
+          <tbody>
+            <tr><td class="sc">1</td><td class="script">Codex 준비</td><td>설치·실행·로그인</td><td>작업 폴더 만들고 Codex 열기</td><td>“현재 폴더를 확인하고 웹 게임 프로젝트를 만들 준비를 해줘.”</td></tr>
+            <tr><td class="sc">2</td><td class="script">콘셉트 정하기</td><td>장르·캐릭터·목표 정하기</td><td>만들 게임을 한 문장으로 설명</td><td>“귀엽고 밝은 분위기의 횡스크롤 게임을 만들고 싶어.”</td></tr>
+            <tr><td class="sc">3</td><td class="script">첫 게임 생성</td><td>HTML/CSS/JS 게임 만들기</td><td>생성된 파일 확인</td><td>“HTML/CSS/JS만 써서 브라우저에서 실행되는 2D 웹 게임을 만들어줘.”</td></tr>
+            <tr><td class="sc">4</td><td class="script">로컬 테스트</td><td>브라우저에서 게임 실행</td><td>플레이하며 문제 찾기</td><td>“로컬에서 실행해서 테스트할 수 있게 해줘.”</td></tr>
+            <tr><td class="sc">5</td><td class="script">피드백 반영</td><td>조작감·난이도·버그 수정</td><td>느낀 점을 자연어로</td><td>“점프가 낮고 적이 너무 빨라. 더 쉽게 조정해줘.”</td></tr>
+            <tr><td class="sc">6</td><td class="script">에셋 만들기</td><td>캐릭터·적·아이템 이미지 생성</td><td>원하는 스타일 정하기</td><td>“투명 배경 PNG 에셋을 만들어줘.”</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · CONCEPT (orange) -->
+  <section class="slide s-image" data-label="콘셉트 정하기">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 만들기 · 콘셉트</div>
+        <h2 class="title">만들기 전에, Codex와 콘셉트를 정합니다</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 44%;display:flex;flex-direction:column;gap:16px;">
+          <div class="note" style="font-weight:600;color:var(--ink);">Codex가 먼저 <b style="color:var(--orange);">아이디어 3개</b>를 제안하고, 장르·조작·목표·난이도로 비교합니다.</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="border:1.5px solid var(--orange-line);background:var(--card);padding:16px 20px;">
+              <div style="font-size:26px;font-weight:700;">① 횡스크롤 점프</div>
+              <div style="font-size:24px;color:var(--ink-2);margin-top:5px;">좌우+점프 · 장애물 넘기 · 난이도 ★☆☆</div>
+            </div>
+            <div style="border:1.5px solid var(--orange-line);background:var(--card);padding:16px 20px;">
+              <div style="font-size:26px;font-weight:700;">② 떨어지는 것 받기</div>
+              <div style="font-size:24px;color:var(--ink-2);margin-top:5px;">좌우 이동 · 아이템 받기 · 난이도 ★★☆</div>
+            </div>
+            <div style="border:1.5px solid var(--orange-line);background:var(--card);padding:16px 20px;">
+              <div style="font-size:26px;font-weight:700;">③ 피하기 서바이벌</div>
+              <div style="font-size:24px;color:var(--ink-2);margin-top:5px;">사방 이동 · 오래 버티기 · 난이도 ★★★</div>
+            </div>
+          </div>
+          <div class="strike-note"><span class="x">✕</span> 아직 코드는 만들지 않습니다 — 방향만 정합니다.</div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">제안 중 하나를 골라 다음 단계로</span></div>
+          <div class="prompt__body" style="font-size:25px;">나는 Codex를 처음 써보는 수강생이고, 브라우저에서 실행되는 간단한 2D 웹 게임을 만들고 싶어.
+
+게임 콘셉트를 같이 정리해줘.
+ · HTML/CSS/JS로 만들 수 있는 <b>간단한</b> 게임
+ · 수업 시간 안에 만들 만큼 <b>범위가 작게</b>
+ · <b>원작 캐릭터를 따라 하지 않는</b> 오리지널
+ · 플레이어 · 적/장애물 · 점수 요소 포함
+ · 마지막에 <b>URL로 공유</b> 가능한 결과물
+
+먼저 만들기 좋은 <b>아이디어 3개</b>를 제안하고,
+각각 장르 · 조작 · 목표 · 난이도를 짧게 비교해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · FIRST PROMPT (orange) -->
+  <section class="slide s-image" data-label="첫 프롬프트">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 만들기 · 첫 프롬프트</div>
+        <h2 class="title">첫 프롬프트 — 그대로 복사하세요</h2>
+      </div>
+      <div class="body" style="margin-top:28px;align-items:center;">
+        <div class="prompt" style="width:100%;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">콘셉트 한 줄은 바꿔 써도 됩니다</span></div>
+          <div class="prompt__body">방금 정한 콘셉트로 웹 게임 <b>첫 버전</b>을 만들어줘.
+
+ · <b>HTML / CSS / JavaScript만</b> 사용 (브라우저에서 바로 실행)
+ · 파일은 <b>index.html · style.css · script.js</b>로 나눠줘
+ · <b>원작 캐릭터를 따라 하지 않는</b> 오리지널 게임으로
+ · 플레이어 이동 · 점수(아이템) · 적/장애물 · 게임오버 · 다시 시작
+ · 코드는 <b>초보자가 읽어도</b> 이해하기 쉽게
+
+완성 후 <b>로컬에서 바로 테스트</b>할 수 있게 실행 방법까지 알려줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · LOCAL TEST & FEEDBACK (browser + prompt, orange) -->
+  <section class="slide s-image" data-label="로컬 테스트">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 만들기 · 테스트 &amp; 피드백</div>
+        <h2 class="title">직접 플레이하고, 느낀 점을 말로 고칩니다</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 44%;display:flex;flex-direction:column;gap:18px;">
+          <div style="border:1.5px solid var(--line);background:var(--card);">
+            <div style="display:flex;align-items:center;gap:9px;padding:14px 18px;border-bottom:1.5px solid var(--line-2);">
+              <span style="width:14px;height:14px;border-radius:50%;background:#e0796a;"></span>
+              <span style="width:14px;height:14px;border-radius:50%;background:#e7c25c;"></span>
+              <span style="width:14px;height:14px;border-radius:50%;background:#8ab87a;"></span>
+              <span style="margin-left:12px;font-size:24px;color:var(--ink-2);font-weight:600;font-variant-numeric:tabular-nums;">localhost:8000</span>
+            </div>
+            <div style="padding:0;position:relative;height:330px;background:linear-gradient(#dfeefc,#eaf6ff);overflow:hidden;">
+              <div style="position:absolute;left:0;right:0;bottom:0;height:64px;background:#cde0b6;border-top:3px solid #a7c98a;"></div>
+              <div style="position:absolute;left:120px;bottom:64px;width:46px;height:60px;background:var(--orange);border-radius:8px 8px 4px 4px;"></div>
+              <div style="position:absolute;left:300px;bottom:64px;width:48px;height:48px;background:#3a3a3a;border-radius:50%;"></div>
+              <div style="position:absolute;left:420px;bottom:150px;width:34px;height:34px;background:#f4c430;transform:rotate(45deg);"></div>
+              <div style="position:absolute;top:18px;left:20px;font-size:24px;font-weight:700;color:#1e3a5f;font-variant-numeric:tabular-nums;">SCORE 1240</div>
+            </div>
+          </div>
+          <div class="note">Codex가 띄운 <b style="color:var(--ink);">localhost 주소</b>에서 바로 플레이하며 문제를 찾습니다.</div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">증상을 그대로 말하면 됩니다</span></div>
+          <div class="prompt__body" style="font-size:26px;">로컬에서 실행해서 바로 테스트할 수 있게 해줘. (필요하면 로컬 서버 실행)
+
+직접 해보니 이런 점이 아쉬워.
+ · 점프가 너무 낮아 장애물을 못 넘어
+ · 적이 처음부터 너무 빨라
+
+<b>초반엔 쉽게 시작해 점점 어려워지게</b>, 점프는 조금 더 높이고 착지감도 자연스럽게 조정해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · ASSETS (orange) -->
+  <section class="slide s-image" data-label="에셋 만들기">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 만들기 · 에셋</div>
+        <h2 class="title">도형을 AI 이미지 에셋으로 교체합니다</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">1</div><div class="t"><b>투명 배경 PNG</b>로 생성</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">캐릭터 · 적 · 아이템 <b>분리</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t">전체 <b>스타일 통일</b> · 같은 톤</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">4</div><div class="t">도형 그래픽을 <b>이미지로 교체</b></div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">에셋 생성 → 저장 → 적용</span></div>
+          <div class="prompt__body" style="font-size:26px;">게임에 쓸 <b>투명 배경 PNG 에셋</b>을 만들어줘.
+
+ · player.png · enemy.png · coin.png · heart.png · goal.png
+ · 귀엽고 밝은 2D 느낌 · 작은 화면에서도 알아보기 쉽게 · 색감 통일
+
+<b>assets 폴더</b>에 위 이름으로 저장하고,
+지금 도형으로 그려진 부분을 이 에셋으로 <b>교체</b>해줘.
+이미지가 안 보여도 게임이 멈추지 않게 해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · STAGE TABLE ② 7~12 (blue) -->
+  <section class="slide s-graphic" data-label="제작 단계 ②">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 다듬고 배포 · <span class="num">STEP 7–12</span></div>
+        <h2 class="title">제작 단계 ② — 완성도부터 배포까지</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:22px;">
+        <table class="plan">
+          <thead><tr><th style="width:64px;">순서</th><th style="width:18%;">단계</th><th style="width:26%;">진행 내용</th><th>수강생이 하는 일</th><th style="width:30%;">Codex에게 요청</th></tr></thead>
+          <tbody>
+            <tr><td class="sc">7</td><td class="script">에셋 적용</td><td>도형 그래픽을 이미지로 교체</td><td>이미지가 잘 보이는지 확인</td><td>“방금 만든 에셋을 게임에 적용해줘.”</td></tr>
+            <tr><td class="sc">8</td><td class="script">완성도 높이기</td><td>점수·체력·효과·게임오버/클리어</td><td>결과물을 다시 플레이</td><td>“게임 완성도를 높여줘.”</td></tr>
+            <tr><td class="sc">9</td><td class="script">모바일 반응형</td><td>화면 대응, 터치 버튼 추가</td><td>휴대폰 화면으로 확인</td><td>“모바일에서도 플레이 가능한 터치 UI를 추가해줘.”</td></tr>
+            <tr><td class="sc">10</td><td class="script">Cloudflare 준비</td><td>가입·로그인</td><td>브라우저에서 로그인 승인</td><td>“wrangler login을 실행해줘. 내가 로그인할게.”</td></tr>
+            <tr><td class="sc">11</td><td class="script">Pages 배포</td><td>정적 사이트 배포</td><td>배포 URL 확인</td><td>“인증이 완료되면 Pages로 배포하고 URL을 알려줘.”</td></tr>
+            <tr><td class="sc">12</td><td class="script">결과 확인</td><td>공개 URL에서 테스트</td><td>친구에게 링크 공유</td><td>“배포된 URL에서 정상 작동하는지 확인해줘.”</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · POLISH (blue) -->
+  <section class="slide s-graphic" data-label="완성도 높이기">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 다듬고 배포 · 완성도</div>
+        <h2 class="title">게임처럼 보이게, 끝까지 플레이되게</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">1</div><div class="t"><b>점수 · 체력</b> 표시 (HUD)</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">획득 · 피격 <b>효과</b> 추가</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t"><b>게임오버</b> 화면 · 다시하기</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">4</div><div class="t"><b>클리어</b> 화면 · 최종 점수</div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">복사해서 입력</span></div>
+          <div class="prompt__body" style="font-size:26px;">게임 완성도를 높여줘. (수업 시간 안에 가능한 선에서)
+
+ · 시작 화면을 더 명확하게
+ · 화면 위에 <b>점수 · 체력 · 진행도</b> 표시
+ · 아이템 획득 / 피격 때 <b>간단한 효과</b> (색 변화·메시지 등)
+ · 체력 0이면 <b>게임오버</b> 화면 + 다시하기
+ · 목표 달성 시 <b>클리어</b> 화면 + 최종 점수</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · MOBILE (blue) -->
+  <section class="slide s-graphic" data-label="모바일 대응">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 다듬고 배포 · 모바일</div>
+        <h2 class="title">휴대폰에서도 플레이되게 만듭니다</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">1</div><div class="t"><b>반응형 Canvas</b> · 화면 크기 대응</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">좌 · 우 · 점프 <b>터치 버튼</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t">버튼 크기 <b>44px 이상</b> · 누르기 쉽게</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">4</div><div class="t">PC에서는 <b>키보드</b>도 그대로</div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">휴대폰 화면 기준으로 확인하세요</span></div>
+          <div class="prompt__body" style="font-size:26px;">모바일에서도 플레이 가능한 <b>터치 UI</b>를 추가해줘.
+
+ · 화면 크기에 맞게 <b>반응형</b>으로 (좌우 스크롤 없게)
+ · 화면 아래에 <b>좌 · 우 이동 / 점프</b> 터치 버튼
+ · 버튼은 엄지로 누르기 좋게 충분히 크게
+
+PC에서는 <b>키보드 조작</b>도 그대로 유지해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · DEPLOY (blue) -->
+  <section class="slide s-graphic" data-label="배포">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 다듬고 배포 · Cloudflare Pages</div>
+        <h2 class="title">공유 가능한 URL로 배포합니다</h2>
+      </div>
+      <div class="body" style="gap:46px;margin-top:26px;align-items:stretch;">
+        <div style="flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="flow">
+            <div class="step"><div class="k">1</div><div class="t"><b>wrangler login</b> 실행</div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">나</div><div class="t">브라우저에서 <b>로그인 승인</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">2</div><div class="t">Cloudflare <b>Pages 배포</b></div></div>
+            <div class="conn"></div>
+            <div class="step"><div class="k">3</div><div class="t"><b>pages.dev URL</b> 받기 · 공유</div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">로그인은 내가, 배포는 Codex가</span></div>
+          <div class="prompt__body" style="font-size:26px;">이 게임을 <b>Cloudflare Pages</b>로 배포해줘.
+
+먼저 Wrangler가 필요한지 확인하고, 필요하면 <b>npx로 실행</b>해줘.
+그다음 <b>wrangler login</b>을 실행해줘. 브라우저가 열리면 내가 직접 승인할게.
+
+인증이 완료되면 현재 폴더를 Pages로 배포하고,
+접속 가능한 <b>pages.dev URL</b>을 알려줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · WHEN STUCK -->
+  <section class="slide" data-label="막힐 때">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 막힐 때</div>
+        <h2 class="title">막히면, 상황을 그대로 말합니다</h2>
+      </div>
+      <div class="body" style="gap:48px;margin-top:24px;align-items:stretch;">
+        <div style="flex:0 0 50%;display:flex;flex-direction:column;justify-content:center;">
+          <div class="fbgrid">
+            <div class="fbrow"><div class="sym"><span class="ic"></span>오류가 났다</div><span class="arr">→</span><div class="say"><b>오류 메시지를 그대로 붙여넣기</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>화면이 이상하다</div><span class="arr">→</span><div class="say"><b>“지금 화면은 이런 상태야”</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>동작이 안 맞는다</div><span class="arr">→</span><div class="say"><b>“이렇게 바꾸고 싶어”</b></div></div>
+            <div class="fbrow"><div class="sym"><span class="ic"></span>되돌리고 싶다</div><span class="arr">→</span><div class="say"><b>“직전 변경을 되돌려줘”</b></div></div>
+          </div>
+        </div>
+        <div class="prompt" style="flex:1;--accent:var(--orange);--accent-soft:var(--orange-soft);--accent-line:var(--orange-line);">
+          <div class="prompt__bar"><span class="prompt__tag">프롬프트</span><span class="prompt__hint">초보자라고 알려주면 설명도 쉬워집니다</span></div>
+          <div class="prompt__body" style="font-size:26px;">게임 실행하니까 이런 오류가 떴어.
+
+(여기에 <b>오류 메시지</b>를 그대로 붙여넣기)
+
+나는 코딩 초보자야. <b>왜 생긴 문제인지 짧게 설명</b>하고,
+수정까지 진행한 다음 다시 테스트할 수 있게 해줘.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · CLOSING -->
+  <section class="slide" data-label="마무리 공식">
+    <div class="wrap">
+      <div class="head">
+        <div class="eyebrow"><span class="dot"></span> 오늘 가져갈 것</div>
+        <h2 class="title">오늘의 제작 공식</h2>
+      </div>
+      <div class="body" style="flex-direction:column;justify-content:center;gap:42px;margin-top:8px;">
+        <div class="pipe">
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">01</span><span class="lab">아이디어</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">02</span><span class="lab">첫 게임</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">03</span><span class="lab">테스트</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">04</span><span class="lab">에셋</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">05</span><span class="lab">모바일</span><span class="bar"></span></div>
+          <div class="seg on" style="--accent:var(--ink);"><span class="idx">06</span><span class="lab">배포</span><span class="bar"></span></div>
+        </div>
+        <div class="prin">
+          <div class="p img"><div class="tag">만드는 법</div><h3>완벽보다, 작동</h3></div>
+          <div class="p gra"><div class="tag">고치는 법</div><h3>코드보다, 말</h3></div>
+        </div>
+        <p class="subtitle" style="margin:0;font-weight:600;color:var(--ink);">만든 게임은 <span style="color:var(--orange);">URL로 공유</span>하고, 다음엔 보스전·스테이지·랭킹으로 확장하세요.</p>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+<button id="railToggle" class="rail-toggle" type="button" aria-label="슬라이드 목록 접기/펼치기" aria-expanded="true"><span class="ic" aria-hidden="true"></span></button>
+<script src="deck-stage.js"></script>
+<script>
+(function(){
+  var btn = document.getElementById('railToggle');
+  if(!btn) return;
+  var visible = true;
+  try { if (localStorage.getItem('deck-stage.railVisible') === '0') visible = false; } catch(e){}
+  function apply(){
+    document.body.classList.toggle('rail-collapsed', !visible);
+    btn.setAttribute('aria-expanded', visible ? 'true' : 'false');
+  }
+  apply();
+  btn.addEventListener('click', function(){
+    visible = !visible;
+    try { window.postMessage({ type:'__deck_rail_visible', on: visible }, '*'); } catch(e){}
+    apply();
+  });
+})();
+</script>
+</body>
+</html>
