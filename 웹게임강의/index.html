@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex로 나만의 웹 게임 만들기</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231e2b38'/%3E%3Crect x='6' y='7' width='20' height='14' fill='%2350b7f5'/%3E%3Crect x='10' y='13' width='5' height='5' fill='%23ffd166'/%3E%3Crect x='18' y='13' width='5' height='5' fill='%2376e4b3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="deck" aria-live="polite">
+    <section class="slide title-slide active">
+      <div class="eyebrow">CODEX WORKSHOP</div>
+      <h1>Codex로<br>나만의 웹 게임 만들기</h1>
+      <p class="lead">AI와 대화하며 2D 웹 게임을 만들고,<br>에셋 적용부터 Cloudflare Pages 배포까지</p>
+      <div class="pills">
+        <span>1시간 실습</span>
+        <span>초보자 환영</span>
+        <span>URL 공유</span>
+      </div>
+      <div class="game-window hero-game" aria-hidden="true">
+        <div class="sky">
+          <i></i><i></i><i></i><i></i>
+          <b class="hero"></b><b class="enemy"></b>
+        </div>
+        <div class="ground"></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">오늘의 목표</div>
+      <h2>끝나면 내 게임 URL이 생깁니다</h2>
+      <p class="sub">코딩 문법보다 Codex에게 일을 맡기는 흐름을 익히는 수업입니다.</p>
+      <div class="three">
+        <article><h3>만들기</h3><p>HTML/CSS/JS로 브라우저 게임을 만듭니다.</p></article>
+        <article><h3>꾸미기</h3><p>imagegen으로 캐릭터와 아이템 에셋을 만들고 적용합니다.</p></article>
+        <article><h3>공유하기</h3><p>Cloudflare Pages에 배포하고 URL로 결과물을 공유합니다.</p></article>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">전체 지도</div>
+      <h2>9단계로 진행합니다</h2>
+      <p class="sub">각 단계마다 한 번씩 확인하고, 막히면 Codex에게 상태를 설명하게 합니다.</p>
+      <ol class="roadmap">
+        <li>Codex 설치 및 GPT 로그인</li>
+        <li>게임 콘셉트 정하기</li>
+        <li>HTML/CSS/JS로 게임 만들기</li>
+        <li>로컬 테스트</li>
+        <li>투명 배경 에셋 만들기</li>
+        <li>게임 완성도 높이기</li>
+        <li>모바일 반응형</li>
+        <li>Cloudflare Pages 배포</li>
+        <li>결과 확인</li>
+      </ol>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">1. Codex 준비</div>
+      <h2>설치보다 중요한 건 작업 폴더입니다</h2>
+      <p class="sub">학생마다 빈 폴더 하나를 열고, 그 안에서 모든 파일을 만들게 합니다.</p>
+      <div class="split">
+        <ul class="checklist">
+          <li>Codex 설치 및 실행</li>
+          <li>GPT 계정으로 로그인</li>
+          <li>새 작업 폴더 만들기</li>
+          <li>Codex에게 현재 폴더 확인시키기</li>
+        </ul>
+        <div>
+          <pre><code>현재 폴더를 확인하고,
+여기에 웹 게임 프로젝트를
+만들 준비를 해줘.</code></pre>
+          <p class="note">수강생이 다운로드 폴더 전체를 작업공간으로 열지 않도록 안내합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">2-3. 콘셉트에서 첫 게임까지</div>
+      <h2>첫 프롬프트는 구체적일수록 빨라집니다</h2>
+      <p class="sub">원작 캐릭터가 아니라 오리지널 게임으로 요청합니다.</p>
+      <div class="copy-row">
+        <pre><code>HTML/CSS/JS만 사용해서
+브라우저에서 실행되는
+오리지널 2D 웹 게임을 만들어줘.
+
+플레이어 이동, 점프, 아이템,
+적, 점수, 게임오버,
+클리어 화면을 넣어줘.</code></pre>
+        <button class="copy-btn" data-copy>복사</button>
+      </div>
+      <div class="mini-cards">
+        <span>HTML/CSS/JS</span><span>오리지널 캐릭터</span><span>먼저 작동하게</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">4. 로컬 테스트</div>
+      <h2>Codex 안에서 바로 플레이해봅니다</h2>
+      <p class="sub">테스트는 강의의 분위기를 살리는 순간입니다. 작동하는 걸 먼저 보여주세요.</p>
+      <div class="split">
+        <div class="game-window demo-game" aria-hidden="true"><div class="sky"><i></i><i></i><i></i><b class="hero"></b><b class="enemy"></b></div><div class="ground"></div></div>
+        <ul class="checklist">
+          <li>로컬 서버 실행</li>
+          <li>브라우저로 확인</li>
+          <li>조작 키 테스트</li>
+          <li>오류가 나면 그대로 Codex에게 전달</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">5. 에셋 만들기</div>
+      <h2>배경 제거를 전제로 요청합니다</h2>
+      <p class="sub">투명 PNG를 목표로 하되, 크로마키 배경 생성 후 제거하는 방식이 안정적입니다.</p>
+      <div class="three compact">
+        <article><h3>만들 에셋</h3><p>플레이어, 적, 아이템, 배경 장식, 목표 지점</p></article>
+        <article><h3>스타일</h3><p>귀여운 도트, 밝은 플랫폼 게임, 간단한 실루엣</p></article>
+        <article><h3>적용</h3><p>assets 폴더 저장, 게임 코드 연결, 렌더링 확인</p></article>
+      </div>
+      <div class="copy-row wide">
+        <pre><code>imagegen으로 게임에 필요한 에셋을 만들어줘.
+배경을 투명화할 수 있게 만들고,
+assets 폴더에 저장한 뒤 게임에 적용해줘.</code></pre>
+        <button class="copy-btn" data-copy>복사</button>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">6-7. 완성도와 모바일</div>
+      <h2>게임은 마지막 20%에서 훨씬 그럴듯해집니다</h2>
+      <p class="sub">점수, 피드백, 모바일 터치 UI만 넣어도 결과물이 크게 달라집니다.</p>
+      <div class="split">
+        <ul class="checklist">
+          <li>점수 / 체력 / 남은 시간</li>
+          <li>게임오버와 클리어 화면</li>
+          <li>충돌 이펙트와 간단한 애니메이션</li>
+          <li>모바일 터치 버튼</li>
+          <li>반응형 레이아웃</li>
+        </ul>
+        <div class="copy-row stacked">
+          <pre><code>게임 완성도를 높여줘.
+점수, 클리어 화면, 이펙트를 추가하고,
+모바일 반응형과 터치 조작 UI를 넣어줘.</code></pre>
+          <button class="copy-btn" data-copy>복사</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">8. Cloudflare Pages 배포</div>
+      <h2>GitHub 없이도 진짜 URL을 만들 수 있습니다</h2>
+      <p class="sub">Wrangler 로그인은 브라우저 OAuth 창에서 학생이 직접 승인합니다.</p>
+      <div class="copy-row">
+        <pre><code>npx -y wrangler login
+
+npx -y wrangler pages project create 프로젝트명 --production-branch main
+
+npx -y wrangler pages deploy . --project-name 프로젝트명 --commit-dirty=true</code></pre>
+        <button class="copy-btn" data-copy>복사</button>
+      </div>
+      <p class="note">브라우저에 Cloudflare 로그인 창이 뜨면 직접 로그인하고 승인합니다.</p>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">9. 결과 확인</div>
+      <h2>배포는 URL 확인까지가 끝입니다</h2>
+      <p class="sub">공개 URL에서 실제 게임 캔버스가 보이고 조작되는지 확인합니다.</p>
+      <div class="split">
+        <div class="game-window demo-game" aria-hidden="true"><div class="sky"><i></i><i></i><i></i><i></i><b class="hero"></b><b class="enemy"></b></div><div class="ground"></div></div>
+        <ul class="checklist">
+          <li>배포 URL 접속</li>
+          <li>게임 화면 렌더링 확인</li>
+          <li>시작 버튼 / 조작 테스트</li>
+          <li>모바일 화면에서 터치 UI 확인</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide dark">
+      <div class="eyebrow">통합 프롬프트</div>
+      <h2>실습 시간이 부족할 때는 이걸로 한 번에 진행합니다</h2>
+      <div class="copy-row full">
+        <pre><code>HTML/CSS/JS만 사용해서 브라우저에서 실행되는 오리지널 2D 웹 게임을 만들어줘.
+
+조건:
+- 플레이어 이동, 점프, 아이템, 적, 점수, 게임오버, 클리어 화면을 넣어줘.
+- 필요한 에셋은 배경을 투명화할 수 있게 만들어 assets 폴더에 저장하고 적용해줘.
+- 모바일 반응형과 터치 조작 UI를 추가해줘.
+- 로컬에서 실행해서 정상 작동을 확인해줘.
+
+마지막으로 Cloudflare Pages에 배포해줘.
+Wrangler CLI가 필요하면 설치하고, wrangler login을 실행해줘.
+내가 로그인하면 Pages로 배포하고 URL을 확인해줘.</code></pre>
+        <button class="copy-btn" data-copy>복사</button>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">강사 운영 체크리스트</div>
+      <h2>막히는 지점은 미리 정해두면 됩니다</h2>
+      <p class="sub">수업의 핵심은 완벽한 게임보다 “만들고 공유하는 경험”입니다.</p>
+      <div class="three">
+        <article><h3>시간 관리</h3><p>게임 구조 15분<br>에셋 12분<br>모바일 7분<br>배포 10분</p></article>
+        <article><h3>막힐 때</h3><p>콘솔 오류 복사<br>화면 캡처 확인<br>기능 하나씩 줄이기<br>일단 배포까지 가기</p></article>
+        <article><h3>수업 메시지</h3><p>AI와 대화하며<br>코드를 만들고<br>결과물을 URL로 공유한다</p></article>
+      </div>
+      <p class="closing">“오늘 만든 URL이 여러분의 첫 AI 게임 결과물입니다.”</p>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="슬라이드 이동">
+    <button id="prev" type="button">←</button>
+    <div class="progress"><span id="bar"></span></div>
+    <strong id="count">1 / 12</strong>
+    <button id="next" type="button">→</button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>

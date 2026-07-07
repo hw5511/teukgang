@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex로 AI 쇼츠 자동화하기 - 수업 진행안</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #5b6472;
+      --paper: #fbfaf6;
+      --line: #d9d4c8;
+      --red: #e5484d;
+      --blue: #246bfe;
+      --green: #12805c;
+      --yellow: #f5c542;
+      --violet: #7c3aed;
+      --black: #101214;
+      --white: #fffdf7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #1b1d21;
+      color: var(--ink);
+      font-family: Pretendard, "Spoqa Han Sans Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #1b1d21;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 44px;
+      background:
+        linear-gradient(90deg, rgba(17, 24, 39, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(17, 24, 39, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 42px 42px;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+    }
+
+    .title-slide {
+      background:
+        radial-gradient(circle at 76% 28%, rgba(245, 197, 66, 0.22), transparent 28%),
+        linear-gradient(135deg, #101214 0%, #1d2530 100%);
+      color: var(--white);
+    }
+
+    .title-slide .meta,
+    .title-slide .script {
+      color: #d9e2ed;
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .kicker {
+      color: var(--red);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title-slide .kicker {
+      color: var(--yellow);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin-top: 22px;
+      font-size: clamp(52px, 6.4vw, 92px);
+      line-height: 1.02;
+      font-weight: 950;
+    }
+
+    h2 {
+      max-width: 1020px;
+      margin-top: 14px;
+      font-size: clamp(34px, 4.1vw, 64px);
+      line-height: 1.08;
+      font-weight: 950;
+    }
+
+    h3 {
+      font-size: 24px;
+      line-height: 1.22;
+      font-weight: 900;
+    }
+
+    .meta {
+      min-width: 210px;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 247, 0.82);
+      padding: 16px 18px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.65fr);
+      gap: 28px;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .canvas,
+    .script {
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 247, 0.9);
+      min-height: 0;
+    }
+
+    .canvas {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .script {
+      padding: 26px;
+      overflow: auto;
+    }
+
+    .script .label,
+    .canvas .label {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--red);
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .script p,
+    .script li,
+    .note {
+      color: var(--muted);
+      font-size: clamp(17px, 1.34vw, 22px);
+      line-height: 1.55;
+      font-weight: 650;
+    }
+
+    .script strong,
+    .note strong {
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .title-slide .script strong {
+      color: var(--white);
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding: 0;
+    }
+
+    .talk-list li,
+    .check-list li {
+      list-style: none;
+      position: relative;
+      margin-bottom: 16px;
+      padding-left: 26px;
+    }
+
+    .talk-list li::before,
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.68em;
+      width: 10px;
+      height: 10px;
+      background: var(--red);
+    }
+
+    .check-list li:nth-child(2n)::before {
+      background: var(--blue);
+    }
+
+    .check-list li:nth-child(3n)::before {
+      background: var(--green);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .big-word {
+      font-size: clamp(48px, 6.2vw, 104px);
+      line-height: 0.98;
+      font-weight: 980;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: clamp(22px, 2vw, 32px);
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .title-slide .lead {
+      color: #d9e2ed;
+    }
+
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .tile {
+      min-height: 152px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: #fffdf7;
+    }
+
+    .tile:nth-child(2n) {
+      background: #f2f8ff;
+    }
+
+    .tile:nth-child(3n) {
+      background: #f2fff8;
+    }
+
+    .tile b {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 950;
+    }
+
+    .tile span {
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+    }
+
+    .timebox {
+      min-height: 128px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .timebox strong {
+      font-size: 28px;
+      font-weight: 980;
+    }
+
+    .timebox span {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+
+    .flow-item {
+      min-height: 118px;
+      padding: 18px;
+      border: 2px solid var(--black);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .flow-item.hot {
+      background: var(--yellow);
+    }
+
+    .flow-item.blue {
+      background: #dce9ff;
+    }
+
+    .flow-item.green {
+      background: #dff8ec;
+    }
+
+    .compare {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 1px solid var(--line);
+      font-size: clamp(16px, 1.22vw, 20px);
+      line-height: 1.35;
+    }
+
+    .compare th,
+    .compare td {
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .compare th {
+      background: var(--black);
+      color: var(--white);
+      font-weight: 950;
+    }
+
+    .compare td:first-child {
+      width: 18%;
+      color: var(--red);
+      font-weight: 950;
+    }
+
+    .prompt {
+      border: 2px solid var(--black);
+      background: #15191f;
+      color: #e9f7ef;
+      padding: 24px;
+      font: 750 clamp(16px, 1.22vw, 20px)/1.5 Consolas, "D2Coding", monospace;
+      white-space: pre-wrap;
+    }
+
+    .prompt .accent {
+      color: #f5c542;
+    }
+
+    .caption-demo {
+      position: relative;
+      height: 430px;
+      border: 2px solid var(--black);
+      background:
+        linear-gradient(90deg, rgba(17, 24, 39, 0.06) 1px, transparent 1px),
+        linear-gradient(rgba(17, 24, 39, 0.06) 1px, transparent 1px),
+        #f7f6ef;
+      background-size: 44px 44px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: 170px;
+      height: 300px;
+      border: 9px solid var(--black);
+      background: #eef5ff;
+      position: relative;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      left: 34px;
+      top: 58px;
+      width: 96px;
+      height: 96px;
+      border: 7px solid var(--blue);
+      transform: rotate(45deg);
+    }
+
+    .subtitle {
+      position: absolute;
+      left: 80px;
+      right: 80px;
+      bottom: 64px;
+      text-align: center;
+      font-size: 54px;
+      line-height: 1.05;
+      font-weight: 980;
+      color: var(--ink);
+      text-shadow: 0 4px 0 var(--paper), 4px 0 0 var(--paper), -4px 0 0 var(--paper), 0 -4px 0 var(--paper);
+    }
+
+    .two-lanes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .lane {
+      border: 2px solid var(--black);
+      background: var(--white);
+      padding: 26px;
+      min-height: 390px;
+    }
+
+    .lane.image {
+      background: #fff7ed;
+    }
+
+    .lane.graphic {
+      background: #eff6ff;
+    }
+
+    .lane h3 {
+      font-size: 34px;
+      margin-bottom: 20px;
+    }
+
+    .lane li {
+      list-style: none;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 21px;
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .mini-visual {
+      height: 170px;
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mini-visual .scene {
+      position: absolute;
+      width: 90px;
+      height: 116px;
+      border: 5px solid var(--black);
+      background: #ffe2b9;
+      top: 28px;
+    }
+
+    .mini-visual .scene:nth-child(1) { left: 26px; }
+    .mini-visual .scene:nth-child(2) { left: 128px; background: #dff8ec; }
+    .mini-visual .scene:nth-child(3) { left: 230px; background: #dce9ff; }
+
+    .math-lines {
+      position: absolute;
+      inset: 24px;
+    }
+
+    .math-lines i {
+      position: absolute;
+      height: 5px;
+      background: var(--blue);
+      transform-origin: left center;
+    }
+
+    .math-lines i:nth-child(1) { left: 36px; top: 102px; width: 250px; transform: rotate(-18deg); }
+    .math-lines i:nth-child(2) { left: 70px; top: 38px; width: 210px; transform: rotate(24deg); background: var(--red); }
+    .math-lines i:nth-child(3) { left: 50px; top: 76px; width: 270px; transform: rotate(0deg); background: var(--green); }
+
+    .math-lines b {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 66px;
+      height: 66px;
+      background: var(--yellow);
+      border: 4px solid var(--black);
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .math-lines b:nth-of-type(1) { left: 36px; top: 42px; }
+    .math-lines b:nth-of-type(2) { right: 42px; top: 70px; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(17, 24, 39, 0.6);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .title-slide footer {
+      color: rgba(255, 253, 247, 0.7);
+    }
+
+    .controls {
+      position: fixed;
+      left: 26px;
+      right: 26px;
+      bottom: 20px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 46px 1fr 84px 46px;
+      gap: 12px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .controls button {
+      height: 42px;
+      border: 0;
+      background: rgba(16, 18, 20, 0.86);
+      color: var(--white);
+      font-size: 22px;
+      font-weight: 950;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .controls strong {
+      color: rgba(255, 253, 247, 0.82);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 8px;
+      background: rgba(255, 253, 247, 0.2);
+    }
+
+    .progress span {
+      display: block;
+      width: 1%;
+      height: 100%;
+      background: var(--red);
+      transition: width 0.2s ease;
+    }
+
+    @media print {
+      body {
+        overflow: visible;
+        background: white;
+      }
+
+      .deck {
+        width: auto;
+        height: auto;
+        background: white;
+      }
+
+      .slide,
+      .slide.active {
+        position: relative;
+        display: grid;
+        width: 100vw;
+        min-height: 100vh;
+        page-break-after: always;
+      }
+
+      .controls {
+        display: none;
+      }
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+
+      .deck {
+        height: auto;
+      }
+
+      .slide {
+        position: relative;
+        min-height: 100vh;
+        padding: 28px;
+      }
+
+      .slide.active {
+        display: grid;
+      }
+
+      .main,
+      .hero-grid,
+      .two-lanes,
+      .timeline,
+      .flow,
+      .tiles {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        left: 12px;
+        right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="slide title-slide active">
+      <header>
+        <div>
+          <div class="kicker">60분 특강 진행안</div>
+          <h1>Codex로 AI 쇼츠 자동화하기</h1>
+        </div>
+        <div class="meta">대상: Codex 입문자<br>목표: 주제 입력에서 mp4 렌더까지</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <p class="big-word">이미지 생성형<br>+<br>그래픽형 쇼츠</p>
+          <p class="lead">수업의 핵심은 “프로그램 설명”이 아니라, 참가자가 Codex에게 어떤 요청을 던지면 어떤 제작물이 나오는지 경험시키는 것입니다.</p>
+        </div>
+        <aside class="script">
+          <span class="label">opening script</span>
+          <p>“오늘은 코딩 문법을 배우는 시간이 아닙니다. Codex에게 쇼츠 제작 과정을 맡기는 법을 배웁니다. 주제 하나를 던지면, 스토리보드가 나오고, 음성과 이미지 또는 그래픽이 붙고, 마지막에는 mp4 파일이 나오는 흐름을 같이 보겠습니다.”</p>
+        </aside>
+      </div>
+      <footer><span>Codex Shorts Automation</span><span>01</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">class promise</div>
+          <h2>수업 끝에는 두 가지 제작법을 구분할 수 있어야 합니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>3분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="tiles">
+            <div class="tile"><b>이미지 생성형</b><span>장면마다 이미지를 만들고, 음성/자막/전환으로 이어 붙입니다.</span></div>
+            <div class="tile"><b>그래픽형</b><span>Remotion으로 숫자, 도형, 그래프, 애니메이션을 직접 구성합니다.</span></div>
+            <div class="tile"><b>공통 구조</b><span>주제 → 표 스토리보드 → 승인 → 생성 → 렌더링 순서로 갑니다.</span></div>
+          </div>
+          <p class="note"><strong>강조점:</strong> 참가자에게 “툴을 배운다”보다 “제작 파이프라인을 프롬프트로 조종한다”는 감각을 심어줍니다.</p>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“쇼츠를 만드는 방법은 크게 두 갈래로 보겠습니다. 하나는 이미지 생성형입니다. 역사 이야기나 야사처럼 장면 분위기가 중요한 콘텐츠에 좋습니다. 다른 하나는 Remotion 그래픽형입니다. 생일 역설처럼 숫자와 원리를 설명해야 할 때 좋습니다. 하지만 둘 다 시작점은 같습니다. 주제를 던지고, 표로 승인하고, 자동으로 제작하게 하는 것입니다.”</p>
+        </aside>
+      </div>
+      <footer><span>목표 공유</span><span>02</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">60 minute map</div>
+          <h2>전체 진행 시간표</h2>
+        </div>
+        <div class="meta">권장 시간<br>60분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="timeline">
+            <div class="timebox"><strong>0-5</strong><span>Codex와 수업 목표 소개</span></div>
+            <div class="timebox"><strong>5-12</strong><span>설치, 권한, API 키 개념</span></div>
+            <div class="timebox"><strong>12-22</strong><span>통합 세팅 프롬프트</span></div>
+            <div class="timebox"><strong>22-35</strong><span>이미지 생성형 쇼츠 흐름</span></div>
+            <div class="timebox"><strong>35-50</strong><span>Remotion 그래픽형 쇼츠 흐름</span></div>
+            <div class="timebox"><strong>50-60</strong><span>자막 UI, 렌더, 피드백</span></div>
+          </div>
+          <p class="note"><strong>운영 팁:</strong> 실제 API 호출과 렌더링은 시간이 걸리므로, “실시간 생성”과 “미리 만들어둔 결과 확인”을 섞어 진행합니다.</p>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“한 시간 안에 모든 원리를 깊게 설명하지 않습니다. 대신 실제 수업에서는 버튼을 누르고 결과를 확인하는 흐름을 빠르게 보여드립니다. 설치와 키 발급은 짧게, 핵심은 표 스토리보드와 승인 이후 자동 제작 과정에 둡니다.”</p>
+        </aside>
+      </div>
+      <footer><span>진행 순서</span><span>03</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">setup</div>
+          <h2>처음에는 “제작 환경을 만들어 달라”고 요청합니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>7분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="flow">
+            <div class="flow-item hot">Codex 설치</div>
+            <div class="flow-item">작업 폴더 생성</div>
+            <div class="flow-item blue">전체 권한 변경</div>
+            <div class="flow-item green">Typecast API 키 설정</div>
+            <div class="flow-item">Remotion 세팅</div>
+          </div>
+          <div class="prompt">프롬프트 예시
+
+Remotion을 설치하고, Typecast API 키를 환경변수로 연결해줘.
+이후 쇼츠 제작용 스킬처럼 사용할 수 있게 정리해줘.
+작업 폴더를 하나 만들고, 이미지 생성형 쇼츠와 그래픽형 쇼츠를 모두 만들 수 있는 구조로 세팅해줘.</div>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“여기서 중요한 건 우리가 설치 명령을 하나하나 설명하지 않는다는 점입니다. 참가자는 Codex에게 ‘세팅해줘’라고 요청합니다. Codex가 설치하고, 폴더를 만들고, 실행 명령을 정리합니다. 수업에서는 이 프롬프트를 그대로 언급하시면 됩니다.”</p>
+        </aside>
+      </div>
+      <footer><span>환경 세팅</span><span>04</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">shared workflow</div>
+          <h2>두 방식 모두 “표 스토리보드 승인”이 중심입니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <table class="compare">
+            <thead>
+              <tr><th>단계</th><th>수업에서 보여줄 화면</th><th>강조할 말</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>주제 입력</td><td>“역사의 흥미로운 사실로 쇼츠 만들어줘”</td><td>시작은 한 문장으로 충분합니다.</td></tr>
+              <tr><td>표 작성</td><td>장면묘사, 대본문장, 시간초</td><td>바로 만들지 말고 먼저 표로 확인합니다.</td></tr>
+              <tr><td>사용자 승인</td><td>“좋아, 이 표대로 진행해줘”</td><td>중간 승인 지점이 품질을 올립니다.</td></tr>
+              <tr><td>JSON 저장</td><td>스토리보드 구조화</td><td>수정과 재렌더를 쉽게 만듭니다.</td></tr>
+              <tr><td>렌더링</td><td>mp4 결과 확인</td><td>결과를 보고 다시 피드백합니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“초보자가 가장 많이 실수하는 지점은 주제를 던지자마자 영상을 만들게 하는 것입니다. 먼저 표가 나와야 합니다. 이 표는 감독용 콘티입니다. 여기서 장면과 대본이 맞는지 확인하고 승인해야 이후 작업이 안정됩니다.”</p>
+        </aside>
+      </div>
+      <footer><span>공통 제작 구조</span><span>05</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">track a</div>
+          <h2>이미지 생성형 쇼츠 워크플로우</h2>
+        </div>
+        <div class="meta">권장 시간<br>13분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="two-lanes">
+            <div class="lane image">
+              <h3>이미지 생성형</h3>
+              <ul>
+                <li>1. 주제와 톤을 정한다</li>
+                <li>2. 씬별 표를 만든다</li>
+                <li>3. 장면마다 이미지 프롬프트를 만든다</li>
+                <li>4. 이미지 생성 후 통일감을 확인한다</li>
+                <li>5. TTS, 자막, 전환, 효과음을 병합한다</li>
+              </ul>
+              <div class="mini-visual">
+                <i class="scene"></i><i class="scene"></i><i class="scene"></i>
+              </div>
+            </div>
+            <div class="lane">
+              <h3>잘 맞는 콘텐츠</h3>
+              <ul>
+                <li>역사 야사</li>
+                <li>인물 이야기</li>
+                <li>사건 재현</li>
+                <li>감성적 분위기</li>
+                <li>이미지 자체가 흡입력인 주제</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“이미지 생성형은 장면 분위기가 중요한 콘텐츠에 좋습니다. 예를 들어 역사 속 사건, 기묘한 야사, 인물의 선택 같은 주제는 한 장면 한 장면을 그림처럼 보여주는 방식이 강합니다. 여기서 Codex는 이미지 프롬프트를 만들고, 생성된 이미지와 음성을 Remotion으로 합쳐줍니다.”</p>
+        </aside>
+      </div>
+      <footer><span>이미지 생성형</span><span>06</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">image prompt</div>
+          <h2>이미지형 데모에서 사용할 프롬프트</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="prompt">역사의 흥미로운 사실 하나를 골라서 쇼츠로 만들어줘.
+
+먼저 표로 정리해줘.
+열은 장면번호, 장면묘사, 실제 대본문장, 시간초, 이미지 생성 프롬프트로 해줘.
+
+내가 승인하기 전까지 이미지 생성이나 영상 렌더링은 하지 말고,
+대본과 장면 구성이 자연스러운지 먼저 확인할 수 있게 해줘.</div>
+          <p class="note"><strong>강조점:</strong> “내가 승인하기 전까지 만들지 말라”는 문장을 넣으면 수업 중 통제감이 좋아집니다.</p>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“이 프롬프트를 보면 제작 지시가 두 단계로 나뉩니다. 첫째, 표를 만든다. 둘째, 승인 후 만든다. 이 구조가 있어야 수업 중에 참가자들이 ‘AI가 마음대로 달려가 버렸다’는 느낌을 받지 않습니다.”</p>
+        </aside>
+      </div>
+      <footer><span>프롬프트 예시</span><span>07</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">track b</div>
+          <h2>Remotion 그래픽형 쇼츠 워크플로우</h2>
+        </div>
+        <div class="meta">권장 시간<br>15분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="two-lanes">
+            <div class="lane graphic">
+              <h3>그래픽형</h3>
+              <ul>
+                <li>1. 설명할 개념을 고른다</li>
+                <li>2. 씬별 장면묘사를 구체화한다</li>
+                <li>3. 숫자, 선, 도형, 그래프를 만든다</li>
+                <li>4. TTS 길이에 맞춰 씬 duration을 맞춘다</li>
+                <li>5. 자막을 빠르게 쪼개고 렌더링한다</li>
+              </ul>
+              <div class="mini-visual">
+                <div class="math-lines"><i></i><i></i><i></i><b>23</b><b>50%</b></div>
+              </div>
+            </div>
+            <div class="lane">
+              <h3>잘 맞는 콘텐츠</h3>
+              <ul>
+                <li>수학 원리</li>
+                <li>과학 개념</li>
+                <li>경제 지표</li>
+                <li>비교와 확률</li>
+                <li>숫자가 변하는 설명</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“그래픽형은 이미지를 새로 뽑는 대신, 코드로 시각 요소를 움직입니다. 생일 역설처럼 ‘왜 23명만 모여도 50%가 넘지?’ 같은 주제는 숫자와 선이 직접 움직여야 이해가 빠릅니다. 이때 Remotion이 영상 편집 툴 역할을 합니다.”</p>
+        </aside>
+      </div>
+      <footer><span>Remotion 그래픽형</span><span>08</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">graphic prompt</div>
+          <h2>그래픽형 데모에서 사용할 프롬프트</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="prompt">수학적으로 흥미로운 지식 하나를 골라 쇼츠 대본을 만들어줘.
+
+먼저 씬별 표로 정리해줘.
+열은 장면번호, 장면묘사, 실제 대본문장, 시간초로 해줘.
+
+장면묘사는 하나마나 한 설명이 아니라,
+화면 중앙에 어떤 숫자, 선, 도형, 그래프가 어떻게 등장하는지 구체적으로 써줘.
+
+내가 승인하면 JSON으로 저장하고,
+씬마다 파일을 나눠 Remotion 그래픽 쇼츠로 만들어줘.</div>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“여기서 중요한 문장은 ‘장면묘사를 구체적으로 써줘’입니다. 그냥 ‘그래프가 나온다’가 아니라, 숫자가 커지고 선이 연결되고 게이지가 차오르는 식으로 지시해야 합니다. 그래야 Codex가 영상을 구성할 재료를 얻습니다.”</p>
+        </aside>
+      </div>
+      <footer><span>프롬프트 예시</span><span>09</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">caption editor</div>
+          <h2>자막은 자동 생성 후, 사람이 마지막으로 다듬습니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="caption-demo">
+            <div class="phone"></div>
+            <div class="subtitle">우연은<br>훨씬 빨리 옵니다.</div>
+          </div>
+          <p class="note"><strong>원칙:</strong> 자막은 설명문이 아니라 쇼츠 자막입니다. 3~4단어 단위, 화면 중앙 하단, 빠른 등장, 큰 글자.</p>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“자막은 자동으로 나누게 할 수 있지만, 마지막 감각은 사람이 보는 게 좋습니다. 우리가 만든 웹 UI에서 청크를 수정하고 저장하면 JSON이 바뀌고, 다시 렌더하면 그 자막으로 영상이 나옵니다. 여기서 ‘말이 안 되는 / 것 같죠’ 같은 어색한 분할을 직접 고치는 시연을 하면 좋습니다.”</p>
+        </aside>
+      </div>
+      <footer><span>자막 청크 조정</span><span>10</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">final render</div>
+          <h2>피드백은 “템포, 크기, 마무리” 순서로 봅니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <table class="compare">
+            <thead>
+              <tr><th>체크 항목</th><th>좋은 상태</th><th>수정 프롬프트</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>템포</td><td>장면이 늘어지지 않고 계속 변화한다</td><td>“진행속도가 느려. 전체를 더 빠르게 압축해줘.”</td></tr>
+              <tr><td>크기</td><td>핵심 그래픽과 자막이 모바일에서 크게 보인다</td><td>“시각요소와 자막을 더 키워줘.”</td></tr>
+              <tr><td>마무리</td><td>마지막 문장이 짧고 기억에 남는다</td><td>“엔딩 대본을 더 선명하게 다듬어줘.”</td></tr>
+              <tr><td>음성</td><td>TTS와 씬 길이가 맞는다</td><td>“씬 단위 Typecast 음성을 생성하고 병합해줘.”</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“렌더가 끝났다고 완성이 아닙니다. 쇼츠는 특히 템포가 중요합니다. 느리면 바로 이탈합니다. 그래서 피드백은 먼저 속도, 그다음 화면 크기, 마지막으로 엔딩 문장을 봅니다. 우리가 방금 했던 것처럼 ‘느리다’, ‘작다’, ‘마무리가 약하다’고 말하면 Codex가 다시 조정합니다.”</p>
+        </aside>
+      </div>
+      <footer><span>피드백 루프</span><span>11</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">two workflows</div>
+          <h2>두 방식의 수업용 비교 정리</h2>
+        </div>
+        <div class="meta">권장 시간<br>4분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <table class="compare">
+            <thead>
+              <tr><th>구분</th><th>이미지 생성형</th><th>Remotion 그래픽형</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>핵심</td><td>장면 이미지를 생성해서 이어 붙임</td><td>숫자, 선, 도형을 애니메이션으로 설명</td></tr>
+              <tr><td>장점</td><td>분위기와 몰입감이 빠르게 생김</td><td>반복 제작과 원리 설명에 강함</td></tr>
+              <tr><td>주의점</td><td>이미지 스타일 통일이 중요</td><td>장면묘사를 구체적으로 써야 함</td></tr>
+              <tr><td>추천 주제</td><td>역사, 인물, 사건, 야사</td><td>수학, 과학, 경제, 데이터</td></tr>
+              <tr><td>수업 메시지</td><td>“장면을 그림처럼 만든다”</td><td>“개념을 움직이게 만든다”</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“둘 중 무엇이 더 좋다고 말하기보다는, 주제에 따라 다르게 선택한다고 설명하면 됩니다. 분위기와 서사가 중요하면 이미지 생성형, 숫자와 구조가 중요하면 그래픽형입니다. 그리고 둘 다 Codex가 스토리보드, 음성, 자막, 렌더링을 이어서 처리하게 만들 수 있습니다.”</p>
+        </aside>
+      </div>
+      <footer><span>두 방식 비교</span><span>12</span></footer>
+    </section>
+
+    <section class="slide">
+      <header>
+        <div>
+          <div class="kicker">integrated prompt</div>
+          <h2>수업 마지막에 보여줄 통합 프롬프트</h2>
+        </div>
+        <div class="meta">권장 시간<br>5분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <div class="prompt">앞으로 내가 쇼츠 주제를 주면 다음 순서로 진행해줘.
+
+1. 바로 만들지 말고 먼저 표로 스토리보드를 작성해줘.
+2. 표에는 장면번호, 장면묘사, 실제 대본문장, 시간초를 넣어줘.
+3. 이미지형이면 이미지 생성 프롬프트도 추가해줘.
+4. 그래픽형이면 화면 중앙의 숫자, 선, 도형, 그래프 움직임을 구체적으로 써줘.
+5. 내가 승인하면 JSON으로 저장해줘.
+6. Typecast로 씬 단위 음성을 생성해줘.
+7. 자막은 3~4단어 단위로 나누고, 웹 UI에서 수정할 수 있게 해줘.
+8. 승인된 JSON, 음성, 이미지 또는 그래픽을 Remotion으로 병합해서 mp4로 렌더링해줘.
+9. 결과를 보고 템포, 크기, 엔딩을 다시 수정할 수 있게 해줘.</div>
+        </div>
+        <aside class="script">
+          <span class="label">speaker script</span>
+          <p>“마지막에는 이 통합 프롬프트를 보여주면 됩니다. 참가자들은 세부 기술명을 외울 필요가 없습니다. 이 문장들을 복사해서 자신의 주제만 바꾸면 됩니다. 오늘 배운 것은 바로 이 제작 순서를 Codex에게 맡기는 방법입니다.”</p>
+        </aside>
+      </div>
+      <footer><span>통합 프롬프트</span><span>13</span></footer>
+    </section>
+
+    <section class="slide title-slide">
+      <header>
+        <div>
+          <div class="kicker">closing</div>
+          <h2>AI 쇼츠 자동화는 “한 번에 완성”이 아니라 “빠르게 고치는 구조”입니다</h2>
+        </div>
+        <div class="meta">권장 시간<br>3분</div>
+      </header>
+      <div class="main">
+        <div class="canvas">
+          <p class="big-word">주제 → 표 → 승인 → 생성 → 렌더 → 피드백</p>
+          <p class="lead">이 순서를 잡아두면, 쇼츠 제작은 막연한 창작이 아니라 반복 가능한 제작 공정이 됩니다.</p>
+        </div>
+        <aside class="script">
+          <span class="label">closing script</span>
+          <p>“오늘의 핵심은 결과물 하나가 아니라 구조입니다. 주제를 표로 바꾸고, 표를 JSON으로 바꾸고, 음성·자막·이미지·그래픽을 합쳐서 렌더링합니다. 마음에 안 들면 ‘느리다, 작다, 마무리가 약하다’처럼 피드백하면 됩니다. 이게 Codex로 쇼츠를 자동화하는 기본 감각입니다.”</p>
+        </aside>
+      </div>
+      <footer><span>Q&A</span><span>14</span></footer>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="슬라이드 이동">
+    <button id="prev" type="button" aria-label="이전 슬라이드">‹</button>
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+    <strong id="count">1 / 14</strong>
+    <button id="next" type="button" aria-label="다음 슬라이드">›</button>
+  </nav>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const prev = document.querySelector("#prev");
+    const next = document.querySelector("#next");
+    const count = document.querySelector("#count");
+    const bar = document.querySelector("#bar");
+    let current = 0;
+
+    const show = (index) => {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("active", slideIndex === current);
+      });
+      count.textContent = `${current + 1} / ${slides.length}`;
+      bar.style.width = `${((current + 1) / slides.length) * 100}%`;
+    };
+
+    prev.addEventListener("click", () => show(current - 1));
+    next.addEventListener("click", () => show(current + 1));
+
+    document.addEventListener("keydown", (event) => {
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+        event.preventDefault();
+        show(current + 1);
+      }
+
+      if (["ArrowLeft", "PageUp"].includes(event.key)) {
+        event.preventDefault();
+        show(current - 1);
+      }
+
+      if (event.key === "Home") show(0);
+      if (event.key === "End") show(slides.length - 1);
+    });
+
+    show(0);
+  </script>
+</body>
+</html>
